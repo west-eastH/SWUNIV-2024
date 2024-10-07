@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class HanbatboxApplication {
 
 	public static void main(String[] args) {
+		System.out.println("Hanbatbox Application Started");
 		SpringApplication.run(HanbatboxApplication.class, args);
 	}
 
