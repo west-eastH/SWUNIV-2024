@@ -11,8 +11,16 @@ spring:
     database: postgresql
     hibernate:
       ddl-auto: create
-
+  cloud:
+    aws:
+      S3:
+        bucket: ${BUCKET_NAME}
+      stack.auto: false
+      region:
+        static: ap-northeast-2
+      credentials:
+        access-key: ${ACCESS_KEY_ID}
+        secret-key: ${ACCESS_SECRET}
 server:
   port: 8080
   address: 0.0.0.0
-
