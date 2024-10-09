@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.hbu.hanbatbox.module.S3.service.S3Service;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,8 @@ public class S3ControllerTest {
 
   @BeforeEach
   void setUp() {
-    file = new MockMultipartFile("file", "test.txt", MediaType.TEXT_PLAIN_VALUE, "Test content".getBytes());
+    file = new MockMultipartFile("file", "test.txt", MediaType.TEXT_PLAIN_VALUE,
+        "Test content".getBytes());
   }
 
   @Test
@@ -41,20 +41,14 @@ public class S3ControllerTest {
     String password = "secret";
     String objectKey = "test-" + System.currentTimeMillis() + "-" + title;
 
-    // 임시 파일 생성
-    Path tempFile = Files.createTempFile("upload-", title);
-    file.transferTo(tempFile.toFile());
-
     // S3 서비스 메서드가 호출될 때의 동작 정의
-    doNothing().when(s3Service).uploadFile(objectKey, title, password, Files.createTempFile("upload-", "test.txt"));
+    doNothing().when(s3Service)
+        .uploadFile(objectKey, title, password, Files.createTempFile("upload-", "test.txt"));
 
     // 파일 업로드 요청 보내기
-    mockMvc.perform(multipart("/api/s3/upload")
-            .file(file)
-            .param("title", title)
-            .param("password", password))
-        .andExpect(status().isOk())
-        .andExpect(content().string("File uploaded successfully!"));
+    mockMvc.perform(
+            multipart("/api/s3/upload").file(file).param("title", title).param("password", password))
+        .andExpect(status().isOk()).andExpect(content().string("File uploaded successfully!"));
   }
 
   @Test
@@ -63,14 +57,12 @@ public class S3ControllerTest {
     String objectKey = "file-123-test.txt"; // 예시 키
 
     // S3 서비스 메서드가 호출될 때의 동작 정의
-    doNothing().when(s3Service).uploadFile(objectKey, title, null, Files.createTempFile("upload-", "test.txt"));
+    doNothing().when(s3Service)
+        .uploadFile(objectKey, title, null, Files.createTempFile("upload-", "test.txt"));
 
     // 파일 업로드 요청 보내기
-    mockMvc.perform(multipart("/api/s3/upload")
-            .file(file)
-            .param("title", title))
-        .andExpect(status().isOk())
-        .andExpect(content().string("File uploaded successfully!"));
+    mockMvc.perform(multipart("/api/s3/upload").file(file).param("title", title))
+        .andExpect(status().isOk()).andExpect(content().string("File uploaded successfully!"));
   }
 
   @Test
@@ -80,13 +72,12 @@ public class S3ControllerTest {
     String objectKey = "file-123-test.txt"; // 예시 키
 
     // S3 서비스 메서드가 실패할 때의 동작 정의
-    doThrow(new RuntimeException("File upload failed!")).when(s3Service).uploadFile(objectKey, title, password, Files.createTempFile("upload-", "test.txt"));
+    doThrow(new RuntimeException("File upload failed!")).when(s3Service)
+        .uploadFile(objectKey, title, password, Files.createTempFile("upload-", "test.txt"));
 
     // 파일 업로드 요청 보내기
-    mockMvc.perform(multipart("/api/s3/upload")
-            .file(file)
-            .param("title", title)
-            .param("password", password))
+    mockMvc.perform(
+            multipart("/api/s3/upload").file(file).param("title", title).param("password", password))
         .andExpect(status().isInternalServerError())
         .andExpect(content().string("File upload failed!"));
   }
