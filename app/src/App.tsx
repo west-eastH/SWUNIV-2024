@@ -1,5 +1,12 @@
+import "@app/config/style/global.css";
+import { RouterProvider } from "@app/config/router";
+
 const App = () => {
-  return (<div>app</div>);
+  return (
+    <>
+      <RouterProvider />
+    </>
+  );
 };
 
 export default App;
