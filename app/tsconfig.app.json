@@ -8,9 +8,11 @@
 
     /* Bundler mode */
     "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": false,
     "isolatedModules": false,
     "moduleDetection": "force",
+    "esModuleInterop": true,
     "noEmit": true,
     "jsx": "react-jsx",
 
@@ -19,15 +21,27 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    "baseUrl": "./",
     "paths": {
-      "@/*": ["./src/*"],
-      "@app/*": ["./src/app/*"],
-      "@entities/*": ["./src/entities/*"],
-      "@features/*": ["./src/features/*"],
-      "@pages/*": ["./src/pages/*"],
-      "@shared/*": ["./src/shared/*"],
-      "@widgets/*": ["./src/widgets/*"],
+      "@app/*": [
+        "src/app/*"
+      ],
+      "@entities/*": [
+        "src/entities/*"
+      ],
+      "@features/*": [
+        "src/features/*"
+      ],
+      "@pages/*": [
+        "src/pages/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
+      ],
+      "@widgets/*": [
+        "src/widgets/*"
+      ]
     }
   },
-  "include": ["src", "vite.config.ts", "tailwind.config.ts"],
+  "include": ["src/**/*", "vite.config.ts", "tailwind.config.ts"]
 }
