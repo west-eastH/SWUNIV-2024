@@ -1,6 +1,5 @@
 import React from 'react';
 import { Typo } from "@shared/ui";
-import { TypingRotate } from "@features/typing-rotate";
 
 export const TitleSection: React.FC = () => {
   return (
