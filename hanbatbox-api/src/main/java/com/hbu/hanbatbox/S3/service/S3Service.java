@@ -1,4 +1,4 @@
-package com.hbu.hanbatbox.module.S3.service;
+package com.hbu.hanbatbox.S3.service;
 
 import java.nio.file.Path;
 import java.util.HashMap;
