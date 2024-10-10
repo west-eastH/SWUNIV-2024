@@ -1,4 +1,4 @@
-package com.hbu.hanbatbox.entitiy;
+package com.hbu.hanbatbox.service;
 
 import java.nio.file.Path;
 import java.util.HashMap;

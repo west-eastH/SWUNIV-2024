@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.hbu.hanbatbox.controller.S3Controller;
-import com.hbu.hanbatbox.entitiy.S3Service;
+import com.hbu.hanbatbox.service.S3Service;
 import java.nio.file.Files;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
