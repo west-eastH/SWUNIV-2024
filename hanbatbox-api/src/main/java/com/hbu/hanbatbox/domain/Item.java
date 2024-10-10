@@ -8,12 +8,12 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "files")
-public class StoredFile {
+@Table(name = "item")
+public class Item {
 
     @Id
     @GeneratedValue
-    @Column(name = "file_id")
+    @Column(name = "item_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,10 +22,10 @@ public class StoredFile {
 
     private String objectKey;
 
-    public static StoredFile createStoredFile(String objectKey) {
-        StoredFile storedFile = new StoredFile();
-        storedFile.objectKey = objectKey;
-        return storedFile;
+    public static Item createItem(String objectKey) {
+        Item item = new Item();
+        item.objectKey = objectKey;
+        return item;
     }
 
   protected void setBox(Box box) {

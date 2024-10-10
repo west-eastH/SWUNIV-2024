@@ -25,27 +25,27 @@ public class Box {
     private String password;
 
     @OneToMany(mappedBy = "box", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StoredFile> files = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
 
     public static Box createBox(String uploader, String title, String password,
-        StoredFile... storedFiles) {
+        Item... items) {
         Box box = new Box();
         box.uploader = uploader;
         box.title = title;
         box.password = password;
-        for (StoredFile storedFile : storedFiles) {
-            box.addFile(storedFile);
+        for (Item item : items) {
+            box.addItem(item);
         }
         return box;
     }
 
-    public void addFile(StoredFile file) {
-        files.add(file);
-        file.setBox(this);
+    public void addItem(Item item) {
+        items.add(item);
+        item.setBox(this);
     }
 
-    public void removeFile(StoredFile file) {
-        files.remove(file);
-        file.setBox(null);
+    public void removeItem(Item item) {
+        items.remove(item);
+        item.setBox(null);
     }
 }
