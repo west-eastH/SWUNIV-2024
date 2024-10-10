@@ -1,7 +1,6 @@
-package com.hbu.hanbatbox.S3.controller;
+package com.hbu.hanbatbox.controller;
 
-import com.hbu.hanbatbox.S3.service.S3Service;
-import com.hbu.hanbatbox.exception.GlobalExceptionHandler;
+import com.hbu.hanbatbox.entitiy.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,20 +24,19 @@ public class S3Controller {
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam("title") String title,
                                              @RequestParam(value = "password", required = false) String password,
-                                             @RequestParam("file") MultipartFile file) {
-        try {
-            // 임시 파일 생성
-            Path tempFile = Files.createTempFile("upload-", title);
-            file.transferTo(tempFile.toFile());
+                                             @RequestParam("file") MultipartFile file) throws IOException {
+        if(file.isEmpty())
+            throw new RuntimeException("File upload failed!");
 
-            String objectKey = System.currentTimeMillis() + "-" + title;
-            s3Service.uploadFile(objectKey, title, password, tempFile);
+        Path tempFile = Files.createTempFile("upload-", title);
+        file.transferTo(tempFile.toFile());
 
-            Files.delete(tempFile);
+        String objectKey = System.currentTimeMillis() + "-" + title;
 
-            return new ResponseEntity<>("File uploaded successfully!", HttpStatus.OK);
-        } catch (IOException e) {
-            return new GlobalExceptionHandler().IOException(e);
-        }
+        s3Service.uploadFile(objectKey, title, password, tempFile);
+
+        Files.delete(tempFile);
+
+        return new ResponseEntity<>("File uploaded successfully!", HttpStatus.OK);
     }
 }
