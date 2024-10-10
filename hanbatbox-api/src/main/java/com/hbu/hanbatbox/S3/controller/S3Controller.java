@@ -1,10 +1,12 @@
-package com.hbu.hanbatbox.module.S3.controller;
+package com.hbu.hanbatbox.S3.controller;
 
-import com.hbu.hanbatbox.module.S3.service.S3Service;
+import com.hbu.hanbatbox.S3.service.S3Service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import com.hbu.hanbatbox.exception.HanbatExceptionHandler;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,15 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/s3")
+@RequestMapping("/file")
+@RequiredArgsConstructor
 public class S3Controller {
 
   private final S3Service s3Service;
-
-  @Autowired
-  public S3Controller(S3Service s3Service) {
-    this.s3Service = s3Service;
-  }
 
   @PostMapping("/upload")
   public ResponseEntity<String> uploadFile(@RequestParam("title") String title,
@@ -40,7 +38,7 @@ public class S3Controller {
 
       return new ResponseEntity<>("File uploaded successfully!", HttpStatus.OK);
     } catch (IOException e) {
-      return new ResponseEntity<>("File upload failed!", HttpStatus.INTERNAL_SERVER_ERROR);
+      return new HanbatExceptionHandler("File upload failed!").throwServerException();
     }
   }
 }

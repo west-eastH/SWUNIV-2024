@@ -1,4 +1,4 @@
-package com.hbu.hanbatbox.module.S3;
+package com.hbu.hanbatbox.S3;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
