@@ -1,4 +1,4 @@
-package com.hbu.hanbatbox;
+package com.hbu.hanbatbox.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

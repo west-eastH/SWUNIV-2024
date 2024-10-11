@@ -1,11 +1,10 @@
-package com.hbu.hanbatbox.S3.controller;
+package com.hbu.hanbatbox.controller;
 
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.hbu.hanbatbox.controller.S3Controller;
 import com.hbu.hanbatbox.service.S3Service;
 import java.nio.file.Files;
 import org.junit.jupiter.api.BeforeEach;
