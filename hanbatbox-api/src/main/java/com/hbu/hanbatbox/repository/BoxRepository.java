@@ -6,5 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BoxRepository extends JpaRepository<Box, Long> {
 
-    List<Box> findByUploader(String uploader);
+    List<Box> findTop5ByOrderByIdDesc();
+
+    List<Box> findTop5ByIdLessThanOrderByIdDesc(Long cursor);
 }
