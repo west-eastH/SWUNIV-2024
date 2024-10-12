@@ -69,6 +69,10 @@
     font-style: normal;
 }
 
+* {
+    box-sizing: border-box !important;
+}
+
 body {
     font-family: 'Pretendard', sans-serif;
 }
@@ -104,4 +108,9 @@ body {
 @keyframes blink-caret {
     from, to { border-color: transparent; }
     50% { border-color: gray; }
+}
+
+.gnb {
+    @apply min-h-[72px] h-[72px] w-full bg-white flex justify-center rounded-t-[15px] drop-shadow-lg;
+    box-shadow: 0 -5px 5px 0 rgba(0, 0, 0, 0.025);
 }
