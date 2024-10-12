@@ -27,12 +27,14 @@ public class S3Controller {
         if(file.isEmpty())
             throw new RuntimeException("File upload failed!");
 
+        // password 처리 구현
+
         Path tempFile = Files.createTempFile("upload-", title);
         file.transferTo(tempFile.toFile());
 
         String objectKey = System.currentTimeMillis() + "-" + title;
 
-        s3Service.uploadFile(objectKey, title, password, tempFile);
+        s3Service.uploadFile(objectKey, title, tempFile);
 
         Files.delete(tempFile);
 

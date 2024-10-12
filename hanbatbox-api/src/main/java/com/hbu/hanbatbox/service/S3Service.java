@@ -23,12 +23,11 @@ public class S3Service {
         this.s3Client = s3Client;
     }
 
-    public void uploadFile(String objectKey, String title, String password, Path filePath) {
+    public void uploadFile(String objectKey, String title, Path filePath) {
 
         Map<String, String> metadata = new HashMap<>();
 
         metadata.put("title", title);
-        metadata.put("password", password);
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
