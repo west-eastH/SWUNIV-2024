@@ -5,6 +5,7 @@ import UploadDeActive from "@shared/assets/icon/upload_deactive.svg?react"
 import MenuActive from "@shared/assets/icon/menu_active.svg?react";
 import MenuDeActive from "@shared/assets/icon/menu_deactive.svg?react";
 import HeaderLogo from "@shared/assets/icon/header-logo.svg?react";
+import UploadWhite from "@shared/assets/icon/upload-white.svg?react";
 
 export const Icon = {
   GNB: {
@@ -22,4 +23,5 @@ export const Icon = {
     },
   },
   HeaderLogo,
+  UploadWhite,
 };
