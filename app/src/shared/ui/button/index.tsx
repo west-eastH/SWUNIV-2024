@@ -16,6 +16,7 @@ export const Button: React.FC<Props> = ({ children, className, theme = "primary"
       className={clsx([
         themeMap[theme],
         className,
+        "flex items-center justify-center gap-x-3 whitespace-nowrap"
       ])}
       {...props}
     >
@@ -28,7 +29,7 @@ export const Button: React.FC<Props> = ({ children, className, theme = "primary"
 const getTypoColor = (buttonTheme: Theme) => buttonTheme === "primary" ? "white" : "gray";
 
 const themeMap: Record<Theme, string> = {
-  primary: "bg-hb-red py-[16px] px-[30px] drop-shadow-md rounded-[4px]",
-  white: "bg-white border-[#E5E5E5] py-[16px] px-[30px] border-1 drop-shadow-md rounded-[4px]",
-  "highlighted-white": "bg-white border-[#585858] border-1 drop-shadow-md rounded-[4px]",
+  primary: "bg-hb-red py-[16px] px-[30px] drop-shadow-sm rounded-[4px]",
+  white: "bg-white border-[#E5E5E5] py-[16px] px-[30px] border-1 border drop-shadow-sm rounded-[4px]",
+  "highlighted-white": "bg-white border border-[#585858] border-1 drop-shadow-sm rounded-[4px]",
 };
