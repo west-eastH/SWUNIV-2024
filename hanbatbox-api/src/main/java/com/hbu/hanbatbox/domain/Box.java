@@ -1,6 +1,7 @@
 package com.hbu.hanbatbox.domain;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,15 +25,25 @@ public class Box {
 
     private String password;
 
+    private String fileSize;
+
+    private LocalDateTime dateUploaded;
+
+    private boolean crypted;
+
     @OneToMany(mappedBy = "box", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> items = new ArrayList<>();
 
-    public static Box createBox(String uploader, String title, String password,
-        Item... items) {
+    public static Box createBox(String uploader, String title, String password, String fileSize,
+        boolean crypted, Item... items) {
         Box box = new Box();
         box.uploader = uploader;
         box.title = title;
         box.password = password;
+        box.fileSize = fileSize;
+        box.crypted = crypted;
+        box.dateUploaded = LocalDateTime.now();
+
         for (Item item : items) {
             box.addItem(item);
         }
