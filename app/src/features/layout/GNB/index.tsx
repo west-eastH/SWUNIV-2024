@@ -9,7 +9,6 @@ const GNB: React.FC = () => {
         <Button type="upload" />
         <Button type="menu" />
       </nav>
-
     </div>
   );
 }
