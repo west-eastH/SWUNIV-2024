@@ -19,22 +19,27 @@ public class BoxService {
     private final BoxRepository boxRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public List<BoxGetDto> getBoxes(Long cursor) {
+    public List<BoxGetDto> searchBoxes(String keyword, String type, Long cursor) {
         List<Box> boxes;
 
-        if (cursor == null) {
-            boxes = boxRepository.findTop5ByOrderByIdDesc();
+        if ("nickname".equalsIgnoreCase(type)) {
+            if (cursor == null) {
+                boxes = boxRepository.findTop5ByUploaderOrderByIdDesc(keyword);
+            } else {
+                boxes = boxRepository.findTop5ByUploaderAndIdLessThanOrderByIdDesc(keyword, cursor);
+            }
         } else {
-            boxes = boxRepository.findTop5ByIdLessThanOrderByIdDesc(cursor);
+            if (cursor == null) {
+                boxes = boxRepository.findTop5ByTitleContainingOrderByIdDesc(keyword);
+            } else {
+                boxes = boxRepository.findTop5ByTitleContainingAndIdLessThanOrderByIdDesc(keyword,
+                    cursor);
+            }
         }
 
-        return boxes.stream().map(box -> new BoxGetDto(
-            box.getId(),
-            box.getUploader(),
-            box.getTitle(),
-            box.getFileSize(),
-            box.isCrypted()
-        )).collect(Collectors.toList());
+        return boxes.stream().map(
+            box -> new BoxGetDto(box.getId(), box.getUploader(), box.getTitle(), box.getFileSize(),
+                box.isCrypted())).collect(Collectors.toList());
     }
 
     public void saveBox(BoxSaveDto boxDto) {
@@ -46,13 +51,8 @@ public class BoxService {
             isCrypted = true;
         }
 
-        Box box = Box.createBox(
-            boxDto.getUploader(),
-            boxDto.getTitle(),
-            encodedPassword,
-            boxDto.getFileSize(),
-            isCrypted
-        );
+        Box box = Box.createBox(boxDto.getUploader(), boxDto.getTitle(), encodedPassword,
+            boxDto.getFileSize(), isCrypted);
         boxRepository.save(box);
     }
 }

@@ -21,9 +21,11 @@ public class BoxController {
 
     @GetMapping("/boxes")
     public ResponseEntity<Result<List<BoxGetDto>>> getAllBoxes(
-        @RequestParam(required = false) Long cursor) {
+        @RequestParam(required = false) Long cursor,
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false) String type) {
 
-        List<BoxGetDto> boxes = boxService.getBoxes(cursor);
+        List<BoxGetDto> boxes = boxService.searchBoxes(keyword, type, cursor);
         return ResponseEntity.ok(new Result<>(200, "Success", boxes));
     }
 

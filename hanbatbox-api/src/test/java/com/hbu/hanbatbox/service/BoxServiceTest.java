@@ -3,7 +3,6 @@ package com.hbu.hanbatbox.service;
 import static com.hbu.hanbatbox.domain.Box.createBox;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.hbu.hanbatbox.config.SecurityConfig;
 import com.hbu.hanbatbox.domain.Box;
 import com.hbu.hanbatbox.dto.BoxGetDto;
 import com.hbu.hanbatbox.repository.BoxRepository;
@@ -38,6 +37,7 @@ public class BoxServiceTest {
 
     @TestConfiguration
     static class TestConfig {
+
         @Bean
         public PasswordEncoder passwordEncoder() {
             return new BCryptPasswordEncoder();
@@ -69,7 +69,7 @@ public class BoxServiceTest {
         boxRepository.save(box2);
 
         // When
-        List<BoxGetDto> result = boxService.getBoxes(null);
+        List<BoxGetDto> result = boxService.searchBoxes("", null, null);
 
         // Then
         assertEquals(2, result.size());
@@ -85,14 +85,14 @@ public class BoxServiceTest {
             boxRepository.save(box);
         }
 
-        Box box = boxRepository.findTop5ByOrderByIdDesc().get(4);
+        Box box = boxRepository.findTop5ByTitleContainingOrderByIdDesc("").get(4);
 
         // When
-        List<BoxGetDto> result = boxService.getBoxes(box.getId());
+        List<BoxGetDto> result = boxService.searchBoxes("", null, null);
 
         // Then
         assertEquals(5, result.size());
-        assertEquals("Uploader5", result.get(0).getUploader());
-        assertEquals("Uploader4", result.get(1).getUploader());
+        assertEquals("Uploader10", result.get(0).getUploader());
+        assertEquals("Uploader9", result.get(1).getUploader());
     }
 }
