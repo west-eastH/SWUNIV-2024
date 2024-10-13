@@ -12,7 +12,7 @@ export const Input: React.FC<Props> = ({ className, ...props }) => {
       className={clsx(["input-box pr-[15px]", className])}
     >
         <input
-          className="py-[10px] pl-[15px]"
+          className="py-[10px] pl-[15px] w-full"
           {...props}
         />
     </div>

@@ -5,3 +5,4 @@ export { Button } from "./button";
 export { Icon } from "./icon";
 export * from "./input";
 export * from "./dropdown";
+export * from "./card";

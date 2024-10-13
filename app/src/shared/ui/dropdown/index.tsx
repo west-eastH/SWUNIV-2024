@@ -24,7 +24,6 @@ export const Dropdown: React.FC<Props> = ({ options, onChange, className, contro
   return (
     <ReactDropdown
       className={clsx([
-        "w-full",
         className,
       ])}
       controlClassName={clsx([
