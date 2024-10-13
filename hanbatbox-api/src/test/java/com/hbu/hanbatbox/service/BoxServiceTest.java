@@ -3,8 +3,9 @@ package com.hbu.hanbatbox.service;
 import static com.hbu.hanbatbox.domain.Box.createBox;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.hbu.hanbatbox.config.SecurityConfig;
 import com.hbu.hanbatbox.domain.Box;
-import com.hbu.hanbatbox.dto.BoxDto;
+import com.hbu.hanbatbox.dto.BoxGetDto;
 import com.hbu.hanbatbox.repository.BoxRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -12,7 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 
 @DataJpaTest
@@ -31,6 +36,13 @@ public class BoxServiceTest {
         boxRepository.deleteAll();
     }
 
+    @TestConfiguration
+    static class TestConfig {
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
+    }
 
     @Test
     @Rollback(value = false)
@@ -57,7 +69,7 @@ public class BoxServiceTest {
         boxRepository.save(box2);
 
         // When
-        List<BoxDto> result = boxService.getBoxes(null);
+        List<BoxGetDto> result = boxService.getBoxes(null);
 
         // Then
         assertEquals(2, result.size());
@@ -76,12 +88,11 @@ public class BoxServiceTest {
         Box box = boxRepository.findTop5ByOrderByIdDesc().get(4);
 
         // When
-        List<BoxDto> result = boxService.getBoxes(box.getId());
+        List<BoxGetDto> result = boxService.getBoxes(box.getId());
 
         // Then
         assertEquals(5, result.size());
         assertEquals("Uploader5", result.get(0).getUploader());
         assertEquals("Uploader4", result.get(1).getUploader());
     }
-
 }

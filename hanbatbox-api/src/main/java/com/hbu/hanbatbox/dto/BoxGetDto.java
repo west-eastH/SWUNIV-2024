@@ -5,12 +5,11 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class BoxDto {
+public class BoxGetDto {
 
     private Long id;
     private String uploader;
     private String title;
-    private String password;
     private String fileSize;
     private boolean crypted;
 }

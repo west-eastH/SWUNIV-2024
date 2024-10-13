@@ -1,6 +1,7 @@
 package com.hbu.hanbatbox.controller;
 
-import com.hbu.hanbatbox.dto.BoxDto;
+import com.hbu.hanbatbox.dto.BoxGetDto;
+import com.hbu.hanbatbox.dto.BoxSaveDto;
 import com.hbu.hanbatbox.dto.Result;
 import com.hbu.hanbatbox.service.BoxService;
 import java.util.List;
@@ -19,15 +20,15 @@ public class BoxController {
     private final BoxService boxService;
 
     @GetMapping("/boxes")
-    public ResponseEntity<Result<List<BoxDto>>> getAllBoxes(
+    public ResponseEntity<Result<List<BoxGetDto>>> getAllBoxes(
         @RequestParam(required = false) Long cursor) {
 
-        List<BoxDto> boxes = boxService.getBoxes(cursor);
+        List<BoxGetDto> boxes = boxService.getBoxes(cursor);
         return ResponseEntity.ok(new Result<>(200, "Success", boxes));
     }
 
     @PostMapping("/boxes")
-    public ResponseEntity<String> createBox(@RequestBody BoxDto boxDto) {
+    public ResponseEntity<String> createBox(@RequestBody BoxSaveDto boxDto) {
         boxService.saveBox(boxDto);
         return ResponseEntity.ok("Box created successfully");
     }

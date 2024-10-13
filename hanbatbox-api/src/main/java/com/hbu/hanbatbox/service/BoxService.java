@@ -1,12 +1,14 @@
 package com.hbu.hanbatbox.service;
 
 import com.hbu.hanbatbox.domain.Box;
-import com.hbu.hanbatbox.dto.BoxDto;
+import com.hbu.hanbatbox.dto.BoxGetDto;
+import com.hbu.hanbatbox.dto.BoxSaveDto;
 import com.hbu.hanbatbox.repository.BoxRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,8 +17,9 @@ import org.springframework.stereotype.Service;
 public class BoxService {
 
     private final BoxRepository boxRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public List<BoxDto> getBoxes(Long cursor) {
+    public List<BoxGetDto> getBoxes(Long cursor) {
         List<Box> boxes;
 
         if (cursor == null) {
@@ -25,23 +28,30 @@ public class BoxService {
             boxes = boxRepository.findTop5ByIdLessThanOrderByIdDesc(cursor);
         }
 
-        return boxes.stream().map(box -> new BoxDto(
+        return boxes.stream().map(box -> new BoxGetDto(
             box.getId(),
             box.getUploader(),
             box.getTitle(),
-            box.getPassword(),
             box.getFileSize(),
             box.isCrypted()
         )).collect(Collectors.toList());
     }
 
-    public void saveBox(BoxDto boxDto) {
+    public void saveBox(BoxSaveDto boxDto) {
+        String encodedPassword = null;
+        boolean isCrypted = false;
+
+        if (boxDto.getPassword() != null && !boxDto.getPassword().isEmpty()) {
+            encodedPassword = passwordEncoder.encode(boxDto.getPassword());
+            isCrypted = true;
+        }
+
         Box box = Box.createBox(
             boxDto.getUploader(),
             boxDto.getTitle(),
-            boxDto.getPassword(),
+            encodedPassword,
             boxDto.getFileSize(),
-            boxDto.isCrypted()
+            isCrypted
         );
         boxRepository.save(box);
     }
