@@ -2,7 +2,7 @@ import React from 'react';
 import { Dropdown, Input } from "@shared/ui";
 import clsx from "clsx";
 
-type Props = {} & Pick<HTMLElement, "className">;
+type Props = {} & Partial<Pick<HTMLElement, "className">>;
 enum DropdownOptionKey {
   FILENAME = "filename",
   UPLOADER = "uploader",
