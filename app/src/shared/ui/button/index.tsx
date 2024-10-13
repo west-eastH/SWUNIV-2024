@@ -2,7 +2,7 @@ import React, { DetailsHTMLAttributes, ReactNode } from 'react';
 import { Typo } from "@shared/ui";
 import clsx from "clsx";
 
-type Theme =  "primary" | "white" | "highlighted-white";
+type Theme =  "primary" | "white" | "highlighted-white" | "outline-red";
 
 type Props = {
   icon?: ReactNode;
@@ -26,10 +26,14 @@ export const Button: React.FC<Props> = ({ children, className, theme = "primary"
   );
 };
 
-const getTypoColor = (buttonTheme: Theme) => buttonTheme === "primary" ? "white" : "gray";
+const getTypoColor = (buttonTheme: Theme) => {
+  if (buttonTheme === "outline-red") return "red";
+  return buttonTheme === "primary" ? "white" : "gray";
+};
 
 const themeMap: Record<Theme, string> = {
   primary: "bg-hb-red py-[16px] px-[30px] drop-shadow-sm rounded-[4px]",
   white: "bg-white border-[#E5E5E5] py-[16px] px-[30px] border-1 border drop-shadow-sm rounded-[4px]",
   "highlighted-white": "bg-white border border-[#585858] border-1 drop-shadow-sm rounded-[4px]",
+  "outline-red": "bg-white border border-hb-red !text-hb-red border-2 drop-shadow-sm rounded-[4px] py-[4px] px-[9px]",
 };
