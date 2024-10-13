@@ -1,7 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Icon, Typo } from "@shared/ui";
 import { urlPath } from "@app/config/router";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 type GNBType = "home" | "upload" | "menu";
 
@@ -39,11 +39,12 @@ const gnbOptions: Record<GNBType, Option> = {
 
 const Button: React.FC<Props> = ({ type }) => {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { active, deActive, text, path } = gnbOptions[type];
   const isActive = pathname === path;
 
   return (
-    <button>
+    <button onClick={() => navigate(path)}>
       {isActive && active}
       {!isActive && deActive}
 
