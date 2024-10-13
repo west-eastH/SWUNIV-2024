@@ -27,12 +27,11 @@ public class S3Service {
     this.s3Client = s3Client;
   }
 
-  public void uploadFile(String objectKey, String title, String password, Path filePath) {
+  public void uploadFile(String objectKey, String title, Path filePath) {
 
     Map<String, String> metadata = new HashMap<>();
 
     metadata.put("title", title);
-    metadata.put("password", password);
 
     PutObjectRequest putObjectRequest = PutObjectRequest.builder().bucket(bucketName).key(objectKey)
         .metadata(metadata).build();
@@ -47,25 +46,11 @@ public class S3Service {
     return s3Client.getObject(getObjectRequest);
   }
 
-  public String getFileTitle(String objectKey) {
-    HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
-        .bucket(bucketName)
-        .key(objectKey)
-        .build();
-
-    HeadObjectResponse headObjectResponse = s3Client.headObject(headObjectRequest);
-    Map<String, String> metadata = headObjectResponse.metadata();
-
-    return metadata.get("title"); // 파일 크기 반환
-  }
-
   public long getFileSize(String objectKey) {
-    HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
-        .bucket(bucketName)
-        .key(objectKey)
-        .build();
+    HeadObjectRequest headObjectRequest = HeadObjectRequest.builder().bucket(bucketName)
+        .key(objectKey).build();
 
     HeadObjectResponse headObjectResponse = s3Client.headObject(headObjectRequest);
-    return headObjectResponse.contentLength(); // 파일 크기 반환
+    return headObjectResponse.contentLength();
   }
 }
