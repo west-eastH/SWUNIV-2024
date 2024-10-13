@@ -109,10 +109,10 @@ public class S3Controller {
     try (ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream())) {
       for (String objectKey : objectKeys) {
         InputStream inputStream = s3Service.downloadFile(objectKey);
-        fileSize += s3Service.getFileSize(objectKey);
 
         ZipEntry zipEntry = new ZipEntry(objectKey);
         zipOut.putNextEntry(zipEntry);
+        fileSize += zipEntry.getCompressedSize();
 
         byte[] buffer = new byte[4096];
         int bytesRead;
