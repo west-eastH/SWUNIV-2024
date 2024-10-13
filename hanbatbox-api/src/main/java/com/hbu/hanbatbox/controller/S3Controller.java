@@ -47,8 +47,6 @@ public class S3Controller {
       String extension = tempFile.getFileName().toString().split("\\.")[1];
       String objectKey = "%d-%s-%d.%s".formatted(System.currentTimeMillis(), title, i++, extension);
 
-      System.out.println("objectKey: " + objectKey);
-
       s3Service.uploadFile(objectKey, title, tempFile);
       Files.delete(tempFile);
     }

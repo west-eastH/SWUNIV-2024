@@ -22,7 +22,6 @@ public class TempFileService {
       }
 
       Path tempFile = Files.createTempFile("upload-", file.getOriginalFilename());
-      System.out.println("tempfile : " + tempFile.getFileName().toString());
       file.transferTo(tempFile.toFile());
 
       tempFiles.add(tempFile);
