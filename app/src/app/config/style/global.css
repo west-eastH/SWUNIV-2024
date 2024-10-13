@@ -139,3 +139,11 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
      -moz-appearance: textfield;
  }
+
+.col {
+    @apply flex flex-col;
+}
+
+.all-center {
+    @apply items-center justify-center;
+}
