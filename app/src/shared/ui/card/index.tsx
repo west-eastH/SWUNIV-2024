@@ -8,7 +8,7 @@ export const Card: React.FC<Props> = ({ children, className, ...props }) => {
     <article className={clsx([
       "w-full border border-1 border-[#E3E3E3] drop-shadow-sm rounded-[12px]",
       className,
-    ])}>
+    ])} {...props}>
       {children}
     </article>
   );

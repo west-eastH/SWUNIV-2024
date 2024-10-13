@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Mobile } from "@features/layout";
 import { Button, Icon, Typo } from "@shared/ui";
 import { NameIndicator, NameUpdateButton } from "@features/nickname";
-import { MetadataInputs, UploadCard, UploadFileList } from "@features/upload-form";
+import { MetadataInputs, UploadFileList } from "@features/upload-form";
 import { FileUpload } from "@widgets/file-upload";
 
 const UploadPage: React.FC = () => {
@@ -31,7 +31,7 @@ const UploadPage: React.FC = () => {
         <UploadFileList data={files} callback={setFiles} />
       </div>
 
-      <div className="flex w-full all-center gap-x-[10px] self-end">
+      <div className="flex w-full all-center gap-x-[10px] self-end py-[23px]">
         <Button
           theme="primary"
           icon={<Icon.UploadWhite />}
