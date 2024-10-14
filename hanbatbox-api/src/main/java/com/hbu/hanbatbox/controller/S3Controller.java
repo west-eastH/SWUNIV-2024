@@ -1,8 +1,7 @@
 package com.hbu.hanbatbox.controller;
 
 import com.hbu.hanbatbox.service.S3Service;
-import com.hbu.hanbatbox.service.TempFileService;
-import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -12,15 +11,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import com.hbu.hanbatbox.service.TempFileService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -33,8 +31,8 @@ public class S3Controller {
 
   @PostMapping("/upload")
   public ResponseEntity<String> uploadFile(@RequestParam("title") String title,
-      @RequestParam(value = "password", required = false) String password,
-      @RequestParam("files") MultipartFile[] files) throws IOException {
+                                           @RequestParam(value = "password", required = false) String password,
+                                           @RequestParam("files") MultipartFile[] files) throws IOException {
 
     if (files.length == 0) {
       throw new RuntimeException("File upload failed!");
@@ -56,8 +54,8 @@ public class S3Controller {
 
   @GetMapping("/download/{id}")
   public void downloadFile(@PathVariable("id") int id,
-      @RequestParam(value = "password", required = false) String password,
-      HttpServletResponse response) throws IOException {
+                           @RequestParam(value = "password", required = false) String password,
+                           HttpServletResponse response) throws IOException {
 
     // DB에서 id를 통해 ObjectKey와 title을 가져옴
 
