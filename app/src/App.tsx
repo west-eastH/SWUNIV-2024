@@ -1,5 +1,5 @@
-import "@app/config/style/global.css";
-import { RouterProvider } from "@app/config/router";
+import '@app/config/style/global.css';
+import { RouterProvider } from '@app/config/router';
 
 const App = () => {
   return (
