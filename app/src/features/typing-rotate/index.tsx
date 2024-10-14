@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const TypingRotate: React.FC<Props> = ({ contents }) => {
-  const [current, setCurrent] = useState<RotateTypoStates>(contents[0]);
+  const [current] = useState<RotateTypoStates>(contents[0]);
   const typoRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export const TypingRotate: React.FC<Props> = ({ contents }) => {
     return () => {
       clearInterval(drawIntervalId);
     };
-  }, [text]);
+  }, []);
 
   return (
     <Typo size={13} ref={typoRef} />

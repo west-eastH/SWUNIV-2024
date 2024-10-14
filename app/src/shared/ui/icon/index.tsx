@@ -1,11 +1,15 @@
-import HomeDeActive from "@shared/assets/icon/home_deactive.svg?react"
-import HomeActive from "@shared/assets/icon/home_active.svg?react"
-import UploadActive from "@shared/assets/icon/upload_active.svg?react"
-import UploadDeActive from "@shared/assets/icon/upload_deactive.svg?react"
-import MenuActive from "@shared/assets/icon/menu_active.svg?react";
-import MenuDeActive from "@shared/assets/icon/menu_deactive.svg?react";
-import HeaderLogo from "@shared/assets/icon/header-logo.svg?react";
-import UploadWhite from "@shared/assets/icon/upload-white.svg?react";
+import HomeDeActive from '@shared/assets/icon/home_deactive.svg';
+import HomeActive from '@shared/assets/icon/home_active.svg';
+import UploadActive from '@shared/assets/icon/upload_active.svg';
+import UploadDeActive from '@shared/assets/icon/upload_deactive.svg';
+import MenuActive from '@shared/assets/icon/menu_active.svg';
+import MenuDeActive from '@shared/assets/icon/menu_deactive.svg';
+import HeaderLogo from '@shared/assets/icon/header-logo.svg';
+import UploadWhite from '@shared/assets/icon/upload-white.svg';
+import BlueFile from '@shared/assets/icon/file.svg';
+import GrayFile from '@shared/assets/icon/gray-file.svg';
+import HbuDownload from '@shared/assets/icon/hbu-download.svg';
+import HomeWhite from '@shared/assets/icon/home-white.svg';
 
 export const Icon = {
   GNB: {
@@ -24,4 +28,8 @@ export const Icon = {
   },
   HeaderLogo,
   UploadWhite,
+  BlueFile,
+  GrayFile,
+  HbuDownload,
+  HomeWhite,
 };

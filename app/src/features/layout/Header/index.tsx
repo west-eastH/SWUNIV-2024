@@ -14,7 +14,7 @@ const Header: React.FC<Props> = ({ children }) => {
   const header = headerMap[children as HeaderType];
 
   return (
-    <header className="h-[56px] flex justify-center items-center border-b border-[#F4F4F4]">
+    <header className="h-[56px] py-[8px] flex justify-center items-center border-b border-[#F4F4F4]">
       {isHeaderType && header}
       {!isHeaderType && children}
     </header>

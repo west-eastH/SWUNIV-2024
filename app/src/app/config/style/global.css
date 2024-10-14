@@ -114,3 +114,36 @@ body {
     @apply min-h-[72px] h-[72px] w-full bg-white flex justify-center rounded-t-[15px] drop-shadow-lg;
     box-shadow: 0 -5px 5px 0 rgba(0, 0, 0, 0.025);
 }
+
+.input-box {
+    @apply border border-[1px] border-[#E3E3E3] rounded-[6px] drop-shadow-sm flex items-center;
+}
+
+
+input::placeholder {
+    color: #CACACA;
+}
+input::-webkit-input-placeholder {
+    color: #CACACA;
+}
+input::-ms-input-placeholder {
+    color: #CACACA;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+     -webkit-appearance: none;
+     margin: 0;
+ }
+
+input[type='number'] {
+     -moz-appearance: textfield;
+ }
+
+.col {
+    @apply flex flex-col;
+}
+
+.all-center {
+    @apply items-center justify-center;
+}

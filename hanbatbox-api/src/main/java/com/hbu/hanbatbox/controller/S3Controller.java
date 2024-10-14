@@ -40,16 +40,17 @@ public class S3Controller {
       throw new RuntimeException("File upload failed!");
     }
 
-    Path[] tempFiles = tempFileService.makeTempFiles(files);
+        Path tempFile = Files.createTempFile("upload-", title);
+        file.transferTo(tempFile.toFile());
 
     int i = 0;
     for (Path tempFile : tempFiles) {
       String extension = tempFile.getFileName().toString().split("\\.")[1];
       String objectKey = "%d-%s-%d.%s".formatted(System.currentTimeMillis(), title, i++, extension);
 
-      s3Service.uploadFile(objectKey, title, tempFile);
-      Files.delete(tempFile);
-    }
+        s3Service.uploadFile(objectKey, title, password, tempFile);
+
+        Files.delete(tempFile);
 
     return new ResponseEntity<>("File uploaded successfully!", HttpStatus.OK);
   }
