@@ -2,7 +2,11 @@ package com.hbu.hanbatbox.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.hbu.hanbatbox.domain.MetadataFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +39,32 @@ public class S3Service {
       RequestBody body = RequestBody.fromFile(getFile(file));
       s3Client.putObject(objectRequest, body);
     });
+  }
+
+  public long getFileSize(String objectKey) {
+    HeadObjectRequest headObjectRequest = HeadObjectRequest.builder().bucket(bucketName)
+        .key(objectKey).build();
+
+    HeadObjectResponse headObjectResponse = s3Client.headObject(headObjectRequest);
+    return headObjectResponse.contentLength();
+  }
+
+  public InputStream downloadFile(String objectKey) {
+    GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucketName).key(objectKey)
+        .build();
+
+    return s3Client.getObject(getObjectRequest);
+  }
+
+  public void uploadFile(String objectKey, String title, String password, Path filePath) {
+    Map<String, String> metadata = new HashMap<>();
+    metadata.put("title", title);
+    metadata.put("password", password);
+
+    PutObjectRequest putObjectRequest = PutObjectRequest.builder().bucket(bucketName).key(objectKey)
+        .metadata(metadata).build();
+
+    s3Client.putObject(putObjectRequest, RequestBody.fromFile(filePath));
   }
 
   private PutObjectRequest createObjectRequest(MultipartFile file) {
