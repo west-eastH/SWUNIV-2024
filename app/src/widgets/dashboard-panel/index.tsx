@@ -1,8 +1,12 @@
 import React from 'react';
-import { NameIndicator, NameUpdateButton, useNameManager } from "@features/nickname";
-import { Button, Icon } from "@shared/ui";
-import { useNavigate } from "react-router";
-import { urlPath } from "@app/config/router";
+import {
+  NameIndicator,
+  NameUpdateButton,
+  useNameManager,
+} from '@features/nickname';
+import { Button, Icon } from '@shared/ui';
+import { useNavigate } from 'react-router';
+import { urlPath } from '@app/config/router';
 
 const DashboardPanel: React.FC = () => {
   const { exit } = useNameManager();
@@ -10,10 +14,10 @@ const DashboardPanel: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col">
-        <div className="w-full flex justify-between items-center">
-          <NameIndicator />
-          <NameUpdateButton />
-        </div>
+      <div className="w-full flex justify-between items-center">
+        <NameIndicator />
+        <NameUpdateButton />
+      </div>
       <div className="flex gap-x-[14px] py-[23px]">
         <Button
           icon={<Icon.UploadWhite />}
@@ -36,6 +40,6 @@ const DashboardPanel: React.FC = () => {
       <div className="border border-1 h-[1px] border-zinc-100" />
     </div>
   );
-}
+};
 
 export default DashboardPanel;
