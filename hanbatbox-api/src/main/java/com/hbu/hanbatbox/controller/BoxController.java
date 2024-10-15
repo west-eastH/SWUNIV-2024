@@ -5,13 +5,15 @@ import com.hbu.hanbatbox.controller.dto.BoxCreation;
 import com.hbu.hanbatbox.dto.BoxGetDto;
 import com.hbu.hanbatbox.dto.Result;
 import com.hbu.hanbatbox.service.BoxService;
-
-import java.util.List;
-
 import com.hbu.hanbatbox.service.S3Service;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +35,7 @@ public class BoxController {
 
   @MultipartMapping("/boxes")
   public ResponseEntity<String> createBox(@ModelAttribute BoxCreation creation) {
-    s3Service.uploads(creation.files());
+    s3Service.uploads("", creation.files());
 //    boxService.saveBox(boxDto);
     return ResponseEntity.ok("Box created successfully");
   }

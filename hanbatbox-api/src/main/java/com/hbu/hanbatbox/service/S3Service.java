@@ -1,14 +1,9 @@
 package com.hbu.hanbatbox.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import com.hbu.hanbatbox.domain.MetadataFactory;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -33,53 +28,56 @@ public class S3Service {
     this.s3Client = s3Client;
   }
 
-  public void uploads(List<MultipartFile> files) {
+  private PutObjectRequest buildPutObjectRequest(String objectKey, MultipartFile file) {
+    return PutObjectRequest.builder()
+        .bucket(bucketName)
+        .key(objectKey)
+        .contentLength(file.getSize())
+        .contentType(file.getContentType())
+        .build();
+  }
+
+  private GetObjectRequest buildGetObjectRequest(String objectKey) {
+    return GetObjectRequest.builder()
+        .bucket(bucketName)
+        .key(objectKey)
+        .build();
+  }
+
+  private HeadObjectRequest buildHeadObjectRequest(String objectKey) {
+    return HeadObjectRequest.builder()
+        .bucket(bucketName)
+        .key(objectKey)
+        .build();
+  }
+
+  private String CreateObjectKey(String title, String originFileName) {
+    String extension = originFileName.split("\\.")[1];
+    return "%d-%s.%s".formatted(System.currentTimeMillis(), title, extension);
+  }
+
+  public void uploads(String title, List<MultipartFile> files) throws RuntimeException {
     files.forEach(file -> {
-      PutObjectRequest objectRequest = createObjectRequest(file);
-      RequestBody body = RequestBody.fromFile(getFile(file));
+      PutObjectRequest objectRequest = buildPutObjectRequest(
+          CreateObjectKey(title, Objects.requireNonNull(file.getOriginalFilename())),
+          file);
+      RequestBody body = RequestBody.fromInputStream(getInputStream(file), file.getSize());
       s3Client.putObject(objectRequest, body);
     });
   }
 
-  public long getFileSize(String objectKey) {
-    HeadObjectRequest headObjectRequest = HeadObjectRequest.builder().bucket(bucketName)
-        .key(objectKey).build();
+  public InputStream downloads(String objectKey) throws RuntimeException {
+    return s3Client.getObject(buildGetObjectRequest(objectKey));
+  }
 
-    HeadObjectResponse headObjectResponse = s3Client.headObject(headObjectRequest);
+  public long getFileSize(String objectKey) {
+    HeadObjectResponse headObjectResponse = s3Client.headObject(buildHeadObjectRequest(objectKey));
     return headObjectResponse.contentLength();
   }
 
-  public InputStream downloadFile(String objectKey) {
-    GetObjectRequest getObjectRequest = GetObjectRequest.builder().bucket(bucketName).key(objectKey)
-        .build();
-
-    return s3Client.getObject(getObjectRequest);
-  }
-
-  public void uploadFile(String objectKey, String title, String password, Path filePath) {
-    Map<String, String> metadata = new HashMap<>();
-    metadata.put("title", title);
-    metadata.put("password", password);
-
-    PutObjectRequest putObjectRequest = PutObjectRequest.builder().bucket(bucketName).key(objectKey)
-        .metadata(metadata).build();
-
-    s3Client.putObject(putObjectRequest, RequestBody.fromFile(filePath));
-  }
-
-  private PutObjectRequest createObjectRequest(MultipartFile file) {
-    return PutObjectRequest.builder()
-        .bucket(bucketName)
-        .key(file.getName())
-        .contentLength(file.getSize())
-        .contentType(file.getContentType())
-        .metadata(MetadataFactory.create(file.getName()))
-        .build();
-  }
-
-  private File getFile(MultipartFile multipartFile) {
+  private InputStream getInputStream(MultipartFile multipartFile) {
     try {
-      return multipartFile.getResource().getFile();
+      return multipartFile.getInputStream();
     } catch (IOException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "서버 오류가 발생하였습니다.");
     }
