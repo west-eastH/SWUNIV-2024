@@ -25,7 +25,7 @@ public class Box {
 
     private String password;
 
-    private String fileSize;
+    private Long fileSize;
 
     private LocalDateTime dateUploaded;
 
@@ -34,25 +34,23 @@ public class Box {
     @OneToMany(mappedBy = "box", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> items = new ArrayList<>();
 
-    public static Box createBox(String uploader, String title, String password, String fileSize,
-        boolean crypted, Item... items) {
+    public static Box createBox(String uploader, String title, String password,
+        boolean crypted) {
         Box box = new Box();
         box.uploader = uploader;
         box.title = title;
         box.password = password;
-        box.fileSize = fileSize;
+        box.fileSize = 0L;
         box.crypted = crypted;
         box.dateUploaded = LocalDateTime.now();
 
-        for (Item item : items) {
-            box.addItem(item);
-        }
         return box;
     }
 
-    public void addItem(Item item) {
+    public void addItem(Item item, Long fileSize) {
         items.add(item);
         item.setBox(this);
+        this.fileSize += fileSize;
     }
 
     public void removeItem(Item item) {
