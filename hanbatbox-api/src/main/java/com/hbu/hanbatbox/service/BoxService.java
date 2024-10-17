@@ -1,6 +1,7 @@
 package com.hbu.hanbatbox.service;
 
 import com.hbu.hanbatbox.domain.Box;
+import com.hbu.hanbatbox.domain.Item;
 import com.hbu.hanbatbox.dto.BoxGetDto;
 import com.hbu.hanbatbox.dto.BoxSaveDto;
 import com.hbu.hanbatbox.repository.BoxRepository;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -18,6 +20,7 @@ public class BoxService {
 
     private final BoxRepository boxRepository;
     private final PasswordEncoder passwordEncoder;
+    private final S3Service s3Service;
 
     public List<BoxGetDto> searchBoxes(String keyword, String type, Long cursor) {
         List<Box> boxes;
@@ -42,7 +45,7 @@ public class BoxService {
                 box.isCrypted())).collect(Collectors.toList());
     }
 
-    public void saveBox(BoxSaveDto boxDto) {
+    public Long saveBoxWithItems(BoxSaveDto boxDto, List<MultipartFile> files) {
         String encodedPassword = null;
         boolean isCrypted = false;
 
@@ -52,7 +55,18 @@ public class BoxService {
         }
 
         Box box = Box.createBox(boxDto.getUploader(), boxDto.getTitle(), encodedPassword,
-            boxDto.getFileSize(), isCrypted);
+            isCrypted);
+
+        files.forEach(file -> {
+
+            String objectKey = s3Service.uploadFileAndGetObjectKey(boxDto.getTitle(), file);
+
+            Item item = Item.createItem(objectKey);
+            box.addItem(item, file.getSize());
+        });
+
         boxRepository.save(box);
+
+        return box.getId();
     }
 }

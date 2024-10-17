@@ -10,6 +10,6 @@ public class BoxGetDto {
     private Long id;
     private String uploader;
     private String title;
-    private String fileSize;
+    private Long fileSize;
     private boolean crypted;
 }

@@ -7,11 +7,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class BoxSaveDto {
 
-    private Long id;
     private String uploader;
     private String title;
     private String password;
-    private String fileSize;
 }
 
 
