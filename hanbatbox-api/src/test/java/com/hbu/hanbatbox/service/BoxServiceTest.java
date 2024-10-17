@@ -9,6 +9,7 @@ import com.hbu.hanbatbox.repository.BoxRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -18,10 +19,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Rollback;
+import software.amazon.awssdk.services.s3.S3Client;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@Import(BoxService.class)
+@Import({BoxService.class, S3Service.class})
 public class BoxServiceTest {
 
     @Autowired
@@ -42,13 +44,18 @@ public class BoxServiceTest {
         public PasswordEncoder passwordEncoder() {
             return new BCryptPasswordEncoder();
         }
+
+        @Bean
+        public S3Client s3Client() {
+            return Mockito.mock(S3Client.class);  // 모킹된 S3Client 빈 등록
+        }
     }
 
     @Test
     @Rollback(value = false)
     public void saveBoxesTest() {
-        Box box1 = createBox("Uploader1", "Title1", "password1", null, false);
-        Box box2 = createBox("Uploader2", "Title2", "password2", null, true);
+        Box box1 = createBox("Uploader1", "Title1", "password1", false);
+        Box box2 = createBox("Uploader2", "Title2", "password2", true);
 
         boxRepository.save(box1);
         boxRepository.save(box2);
@@ -62,8 +69,8 @@ public class BoxServiceTest {
     @Test
     public void noCursorTest() {
         // Given
-        Box box1 = createBox("Uploader1", "Title1", "password1", "500MB", false);
-        Box box2 = createBox("Uploader2", "Title2", "password2", "1GB", true);
+        Box box1 = createBox("Uploader1", "Title1", "password1", false);
+        Box box2 = createBox("Uploader2", "Title2", "password2", true);
 
         boxRepository.save(box1);
         boxRepository.save(box2);
@@ -81,7 +88,7 @@ public class BoxServiceTest {
     public void cursorTest() {
         // Given
         for (int i = 1; i <= 10; i++) {
-            Box box = createBox("Uploader" + i, "Title" + i, "password" + i, i * 100 + "MB", false);
+            Box box = createBox("Uploader" + i, "Title" + i, "password" + i, false);
             boxRepository.save(box);
         }
 
