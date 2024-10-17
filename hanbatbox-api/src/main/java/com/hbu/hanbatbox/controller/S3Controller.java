@@ -7,20 +7,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/files")
@@ -28,14 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class S3Controller {
 
   private final S3Service s3Service;
-
-  @PostMapping(value = "/uploads", consumes = {MediaType.APPLICATION_JSON_VALUE,
-      MediaType.MULTIPART_FORM_DATA_VALUE})
-  public ResponseEntity<String> uploads(@RequestPart Map<String, String> data,
-      @RequestPart List<MultipartFile> files) throws IOException {
-    s3Service.uploads(data.get("title"), files);
-    return ResponseEntity.ok("file upload successfully");
-  }
 
   @PostMapping(value = "/downloads/{id}", consumes = {MediaType.TEXT_PLAIN_VALUE,
       MediaType.APPLICATION_JSON_VALUE})

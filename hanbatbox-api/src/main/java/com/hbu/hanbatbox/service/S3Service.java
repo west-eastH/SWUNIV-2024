@@ -2,7 +2,6 @@ package com.hbu.hanbatbox.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Objects;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -51,19 +50,20 @@ public class S3Service {
         .build();
   }
 
-  private String CreateObjectKey(String title, String originFileName) {
+  private String createObjectKey(String title, String originFileName) {
     String extension = originFileName.split("\\.")[1];
     return "%d-%s.%s".formatted(System.currentTimeMillis(), title, extension);
   }
 
-  public void uploads(String title, List<MultipartFile> files) throws RuntimeException {
-    files.forEach(file -> {
-      PutObjectRequest objectRequest = buildPutObjectRequest(
-          CreateObjectKey(title, Objects.requireNonNull(file.getOriginalFilename())),
-          file);
-      RequestBody body = RequestBody.fromInputStream(getInputStream(file), file.getSize());
-      s3Client.putObject(objectRequest, body);
-    });
+  public String uploadFileAndGetObjectKey(String title, MultipartFile file) {
+
+    String objectKey = createObjectKey(title, Objects.requireNonNull(file.getOriginalFilename()));
+
+    PutObjectRequest objectRequest = buildPutObjectRequest(objectKey, file);
+    RequestBody body = RequestBody.fromInputStream(getInputStream(file), file.getSize());
+    s3Client.putObject(objectRequest, body);
+
+    return objectKey;
   }
 
   public InputStream downloads(String objectKey) throws RuntimeException {
