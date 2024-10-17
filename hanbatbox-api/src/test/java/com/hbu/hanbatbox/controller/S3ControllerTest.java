@@ -1,12 +1,9 @@
 package com.hbu.hanbatbox.controller;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.hbu.hanbatbox.service.BoxService;
-import com.hbu.hanbatbox.service.S3Service;
-import com.hbu.hanbatbox.service.TempFileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 
 @WebMvcTest(controllers = BoxController.class, excludeAutoConfiguration = SecurityAutoConfiguration.class)
-public class S3ControllerTest {
+class S3ControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -35,7 +32,7 @@ public class S3ControllerTest {
   }
 
   @Test
-  public void testUploadFileWithPassword() throws Exception {
+  void testUploadFileWithPassword() throws Exception {
     MockMultipartFile jsonFile = new MockMultipartFile("data", "",
         MediaType.APPLICATION_JSON_VALUE, "{\"uploader\":\"Uploader\", \"title\":\"Test.txt\", \"password\":\"secret\"}".getBytes());
 
@@ -44,11 +41,10 @@ public class S3ControllerTest {
             .file(file)
             .file(jsonFile))
         .andExpect(status().isOk());
-//        .andExpect(content().string("File uploaded successfully!"));
   }
 
   @Test
-  public void testUploadFileWithoutPassword() throws Exception {
+  void testUploadFileWithoutPassword() throws Exception {
     MockMultipartFile jsonFile = new MockMultipartFile("data", "",
         MediaType.APPLICATION_JSON_VALUE, "{\"uploader\":\"Uploader\", \"title\":\"Test.txt\"}".getBytes());
 
@@ -57,11 +53,10 @@ public class S3ControllerTest {
             .file(file)
             .file(jsonFile))
         .andExpect(status().isOk());
-//        .andExpect(content().string("File uploaded successfully!"));
   }
 
   @Test
-  public void testUploadFileFailure() throws Exception {
+  void testUploadFileFailure() throws Exception {
     MockMultipartFile emptyFile = new MockMultipartFile("files", "", MediaType.TEXT_PLAIN_VALUE, new byte[0]);
     MockMultipartFile jsonFile = new MockMultipartFile("data", "",
         MediaType.APPLICATION_JSON_VALUE, "{\"uploader\":\"Uploader\", \"title\":\"Test.txt\", \"password\":\"secret\"}".getBytes());
@@ -71,6 +66,5 @@ public class S3ControllerTest {
             .file(emptyFile)
             .file(jsonFile))
         .andExpect(status().isOk());
-//        .andExpect(content().string("File upload failed!"));
   }
 }
