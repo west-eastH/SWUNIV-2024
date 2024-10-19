@@ -6,3 +6,10 @@ export type UploadBoxDetails = {
   crypted: boolean;
   dateUploaded: string;
 };
+
+export type BoxCreation = {
+  uploader: string;
+  title: string;
+  password: string;
+  files: File[];
+};

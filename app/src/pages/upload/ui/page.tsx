@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 import { Mobile } from '@features/layout';
-import { Button, Icon, Typo } from '@shared/ui';
-import { NameIndicator, NameUpdateButton } from '@features/nickname';
-import { MetadataInputs, UploadFileList } from '@features/upload-form';
+import { Button, Icon, Typo, useModal } from '@shared/ui';
+import {
+  NameIndicator,
+  NameUpdateButton,
+  useNameManager,
+} from '@features/nickname';
+import {
+  MetadataInputs,
+  upload,
+  UploadFileList,
+  withValidation,
+} from '@features/upload-form';
 import { FileUpload } from '@widgets/file-upload';
 import { useNavigate } from 'react-router';
 import { urlPath } from '@app/config/router';
 import { FormProvider, useForm } from 'react-hook-form';
-import { UploadCreation } from '@features/upload-form/types';
 import { fileUtils } from '@shared/utils';
+import { BoxCreation } from '@entities/upload-box';
 
 const getFirstFileName = (files: File[]) => {
   if (files.length === 0) return;
@@ -18,7 +27,9 @@ const getFirstFileName = (files: File[]) => {
 export const UploadPage: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const navigate = useNavigate();
-  const methods = useForm<UploadCreation>();
+  const methods = useForm<BoxCreation>();
+  const { createModal } = useModal();
+  const { nickname } = useNameManager();
 
   const setFileFormStates = (files: File[]) => methods.setValue('files', files);
   const setTitle = (title?: string) =>
@@ -36,9 +47,17 @@ export const UploadPage: React.FC = () => {
     setFiles(callback);
   };
 
-  const onClickUploadButton = methods.handleSubmit((data) => {
-    console.log({ data });
-    navigate(urlPath.uploadComplete);
+  const onClickUploadButton = methods.handleSubmit(async (data) => {
+    const assemble: BoxCreation = { ...data, uploader: nickname as string };
+    console.log({ assemble });
+    withValidation(assemble, createModal, async () => {
+      try {
+        await upload(assemble);
+        navigate(urlPath.uploadComplete);
+      } catch (error) {
+        console.error(error);
+      }
+    });
   });
 
   return (
