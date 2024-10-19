@@ -9,24 +9,24 @@ import java.io.IOException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> Exception(Exception ex) {
-        //logging
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<String> Exception(Exception ex) {
+    //logging
+    ex.printStackTrace();
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  @ExceptionHandler(IOException.class)
+  public ResponseEntity<String> IOException(IOException ex) {
+    // logging
+    ex.printStackTrace();
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 
-    @ExceptionHandler(IOException.class)
-    public ResponseEntity<String> IOException(IOException ex) {
-        // logging
-
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> RuntimeException(RuntimeException ex) {
-        // logging
-
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+  @ExceptionHandler(RuntimeException.class)
+  public ResponseEntity<String> RuntimeException(RuntimeException ex) {
+    // logging
+    ex.printStackTrace();
+    return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+  }
 }
