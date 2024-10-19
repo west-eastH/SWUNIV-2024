@@ -4,7 +4,9 @@ import com.hbu.hanbatbox.dto.BoxGetDto;
 import com.hbu.hanbatbox.dto.BoxSaveDto;
 import com.hbu.hanbatbox.dto.Result;
 import com.hbu.hanbatbox.service.BoxService;
+
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,24 +23,24 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/boxes")
 public class BoxController {
 
-    private final BoxService boxService;
+  private final BoxService boxService;
 
-    @GetMapping
-    public ResponseEntity<Result<List<BoxGetDto>>> getAllBoxes(
-        @RequestParam(required = false) Long cursor, @RequestParam(required = false) String keyword,
-        @RequestParam(required = false) String type) {
+  @GetMapping
+  public ResponseEntity<Result<List<BoxGetDto>>> getAllBoxes(
+      @RequestParam(required = false) Long cursor, @RequestParam(required = false) String keyword,
+      @RequestParam(required = false) String type) {
 
-        List<BoxGetDto> boxes = boxService.searchBoxes(keyword, type, cursor);
-        return ResponseEntity.ok(new Result<>(200, "Success", boxes));
-    }
+    List<BoxGetDto> boxes = boxService.searchBoxes(keyword, type, cursor);
+    return ResponseEntity.ok(new Result<>(200, "Success", boxes));
+  }
 
-    @PostMapping(value = "/uploads", consumes = {MediaType.APPLICATION_JSON_VALUE,
-        MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Long> uploads(@RequestPart BoxSaveDto data,
-        @RequestPart List<MultipartFile> files) {
+  @PostMapping(value = "/uploads", consumes = {MediaType.APPLICATION_JSON_VALUE,
+      MediaType.MULTIPART_FORM_DATA_VALUE})
+  public ResponseEntity<Long> uploads(@RequestPart BoxSaveDto data,
+                                      @RequestPart(name = "files") List<MultipartFile> files) {
 
-        Long boxId = boxService.saveBoxWithItems(data, files);
+    Long boxId = boxService.saveBoxWithItems(data, files);
 
-        return ResponseEntity.ok(boxId);
-    }
+    return ResponseEntity.ok(boxId);
+  }
 }
