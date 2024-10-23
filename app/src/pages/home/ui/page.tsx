@@ -4,11 +4,9 @@ import DashboardPanel from '@widgets/dashboard-panel';
 import { Search, UploadBoxList, useBoxesQuery } from '@features/upload-box';
 
 export const Home: React.FC = () => {
-  const {
-    query: { isFetched },
-  } = useBoxesQuery();
+  const { data } = useBoxesQuery();
 
-  if (!isFetched) return null;
+  if (!data) return null;
 
   return (
     <Mobile header="header-logo">

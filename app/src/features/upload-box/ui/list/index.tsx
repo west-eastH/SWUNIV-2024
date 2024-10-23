@@ -9,15 +9,9 @@ export const UploadBoxList: React.FC = () => {
     getNextData,
   } = useBoxesQuery();
 
-  const test = () => {
-    getNextData();
-  };
-
-  console.log({ boxes });
-
   return (
-    <ScrollEndObserver onScrollEnd={test}>
-      <div className="flex flex-col gap-y-[8px]">
+    <ScrollEndObserver onScrollEnd={getNextData}>
+      <div className="flex flex-col gap-y-[8px] mb-[100px]">
         {boxes.map((box) => (
           <UploadBox key={box.id} data={box} />
         ))}

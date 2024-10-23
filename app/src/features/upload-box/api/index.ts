@@ -21,8 +21,21 @@ export type BoxListResponse = {
   nextCursorId: number | -1;
 };
 
-export const getBoxList = async (
-  params: BoxListRequestParam,
-): Promise<BoxListResponse> => apiClient.get(`/boxes?${qs.stringify(params)}`);
+export const getBoxList = async ({
+  type,
+  cursor,
+  keyword,
+}: BoxListRequestParam): Promise<BoxListResponse> =>
+  apiClient.get(
+    `/boxes?${qs.stringify({
+      cursor,
+      type: !!type ? (type.trim() === '' ? undefined : type) : undefined,
+      keyword: !!keyword
+        ? keyword.trim() === ''
+          ? undefined
+          : keyword
+        : undefined,
+    })}`,
+  );
 
 export { default as useBoxesQuery } from './useBoxesQuery';
