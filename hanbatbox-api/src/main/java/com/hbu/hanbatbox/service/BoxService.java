@@ -6,9 +6,15 @@ import com.hbu.hanbatbox.domain.Item;
 import com.hbu.hanbatbox.dto.BoxGetDto;
 import com.hbu.hanbatbox.dto.BoxSaveDto;
 import com.hbu.hanbatbox.repository.BoxRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -25,39 +31,15 @@ public class BoxService {
     private final BoxRepository boxRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
+    private final EntityManager entityManager;
 
     public BoxListDetails searchBoxes(String keyword, String type, Long cursor) {
-        List<Box> boxes = new ArrayList<>();
-        Long nextCursorId = null;
-        System.out.println("keyword: " + keyword + " cursor: " + cursor);
-
         if (Objects.nonNull(cursor) && cursor == -1L) {
             return new BoxListDetails(new ArrayList<>(), -1L);
         }
 
-        if (type == null) {
-            boxes = boxRepository.findByCursor(cursor);
-            nextCursorId = getNextCursorId(boxes);
-        }
-
-        if ("nickname".equalsIgnoreCase(type)) {
-            if (cursor == null) {
-                boxes = boxRepository.findTop5ByUploaderOrderByIdDesc(keyword);
-                nextCursorId = getNextCursorId(boxes);
-            } else {
-                boxes = boxRepository.findTop5ByUploaderAndIdLessThanOrderByIdDesc(keyword, cursor);
-                nextCursorId = getNextCursorId(boxes);
-            }
-        }
-
-        if ("title".equalsIgnoreCase(type)) {
-            if (cursor == null) {
-                boxes = boxRepository.findTop5ByTitleContainingOrderByIdDesc(keyword);
-            } else {
-                boxes = boxRepository.findTop5ByTitleContainingAndIdLessThanOrderByIdDesc(keyword,
-                    cursor);
-            }
-        }
+        List<Box> boxes = search(cursor, type, keyword);
+        Long nextCursorId = getNextCursorId(boxes);
 
         List<BoxGetDto> collect = boxes.stream().map(
             box -> new BoxGetDto(box.getId(), box.getUploader(), box.getTitle(), box.getFileSize(),
@@ -95,5 +77,31 @@ public class BoxService {
         if (boxes.isEmpty()) return null;
         Long nextCursor = boxes.getLast().getId();
         return nextCursor == null ? -1 : nextCursor;
+    }
+
+    private List<Box> search(Long cursor, String type, String keyword) {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Box> query = builder.createQuery(Box.class);
+        Root<Box> root = query.from(Box.class);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (cursor != null) {
+            predicates.add(builder.lessThan(root.get("id"), cursor));
+        }
+        if ("nickname".equals(type) && keyword != null) {
+            predicates.add(builder.like(root.get("uploader"), keyword + "%"));
+        }
+        if ("title".equals(type) && keyword != null) {
+            predicates.add(builder.like(root.get("title"), keyword + "%"));
+        }
+
+        query.select(root)
+            .where(builder.and(predicates.toArray(new Predicate[0])))
+            .orderBy(builder.desc(root.get("id")));
+
+        return entityManager.createQuery(query)
+            .setMaxResults(10)
+            .getResultList();
     }
 }
