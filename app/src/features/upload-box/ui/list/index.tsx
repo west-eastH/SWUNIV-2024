@@ -1,17 +1,27 @@
 import React from 'react';
-import { UploadBoxDetails } from '@entities/upload-box';
 import UploadBox from '../card';
+import { useBoxesQuery } from '@features/upload-box';
+import ScrollEndObserver from '@features/ScrollEndObserver';
 
-type Props = {
-  data: UploadBoxDetails[];
-};
+export const UploadBoxList: React.FC = () => {
+  const {
+    data: { boxes },
+    getNextData,
+  } = useBoxesQuery();
 
-export const UploadBoxList: React.FC<Props> = ({ data }) => {
+  const test = () => {
+    getNextData();
+  };
+
+  console.log({ boxes });
+
   return (
-    <div className="flex flex-col gap-y-[8px] overflow-y-scroll">
-      {data.map((box) => (
-        <UploadBox key={box.id} data={box} />
-      ))}
-    </div>
+    <ScrollEndObserver onScrollEnd={test}>
+      <div className="flex flex-col gap-y-[8px]">
+        {boxes.map((box) => (
+          <UploadBox key={box.id} data={box} />
+        ))}
+      </div>
+    </ScrollEndObserver>
   );
 };
