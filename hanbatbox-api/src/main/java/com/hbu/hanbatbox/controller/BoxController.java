@@ -1,8 +1,7 @@
 package com.hbu.hanbatbox.controller;
 
-import com.hbu.hanbatbox.dto.BoxGetDto;
+import com.hbu.hanbatbox.controller.dto.BoxListDetails;
 import com.hbu.hanbatbox.dto.BoxSaveDto;
-import com.hbu.hanbatbox.dto.Result;
 import com.hbu.hanbatbox.service.BoxService;
 
 import java.util.List;
@@ -26,12 +25,12 @@ public class BoxController {
   private final BoxService boxService;
 
   @GetMapping
-  public ResponseEntity<Result<List<BoxGetDto>>> getAllBoxes(
+  public ResponseEntity<BoxListDetails> getAllBoxes(
       @RequestParam(required = false) Long cursor, @RequestParam(required = false) String keyword,
       @RequestParam(required = false) String type) {
 
-    List<BoxGetDto> boxes = boxService.searchBoxes(keyword, type, cursor);
-    return ResponseEntity.ok(new Result<>(200, "Success", boxes));
+    BoxListDetails boxListDetails = boxService.searchBoxes(keyword, type, cursor);
+    return ResponseEntity.ok(boxListDetails);
   }
 
   @PostMapping(value = "/uploads", consumes = {MediaType.APPLICATION_JSON_VALUE,
