@@ -1,12 +1,16 @@
 package com.hbu.hanbatbox.service;
 
+import com.hbu.hanbatbox.controller.dto.BoxListDetails;
 import com.hbu.hanbatbox.domain.Box;
 import com.hbu.hanbatbox.domain.Item;
 import com.hbu.hanbatbox.dto.BoxGetDto;
 import com.hbu.hanbatbox.dto.BoxSaveDto;
 import com.hbu.hanbatbox.repository.BoxRepository;
 import jakarta.transaction.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,16 +26,31 @@ public class BoxService {
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
 
-    public List<BoxGetDto> searchBoxes(String keyword, String type, Long cursor) {
-        List<Box> boxes;
+    public BoxListDetails searchBoxes(String keyword, String type, Long cursor) {
+        List<Box> boxes = new ArrayList<>();
+        Long nextCursorId = null;
+        System.out.println("keyword: " + keyword + " cursor: " + cursor);
+
+        if (Objects.nonNull(cursor) && cursor == -1L) {
+            return new BoxListDetails(new ArrayList<>(), -1L);
+        }
+
+        if (type == null) {
+            boxes = boxRepository.findByCursor(cursor);
+            nextCursorId = getNextCursorId(boxes);
+        }
 
         if ("nickname".equalsIgnoreCase(type)) {
             if (cursor == null) {
                 boxes = boxRepository.findTop5ByUploaderOrderByIdDesc(keyword);
+                nextCursorId = getNextCursorId(boxes);
             } else {
                 boxes = boxRepository.findTop5ByUploaderAndIdLessThanOrderByIdDesc(keyword, cursor);
+                nextCursorId = getNextCursorId(boxes);
             }
-        } else {
+        }
+
+        if ("title".equalsIgnoreCase(type)) {
             if (cursor == null) {
                 boxes = boxRepository.findTop5ByTitleContainingOrderByIdDesc(keyword);
             } else {
@@ -40,9 +59,11 @@ public class BoxService {
             }
         }
 
-        return boxes.stream().map(
+        List<BoxGetDto> collect = boxes.stream().map(
             box -> new BoxGetDto(box.getId(), box.getUploader(), box.getTitle(), box.getFileSize(),
                 box.isCrypted())).collect(Collectors.toList());
+
+        return new BoxListDetails(collect, nextCursorId);
     }
 
     public Long saveBoxWithItems(BoxSaveDto boxDto, List<MultipartFile> files) {
@@ -68,5 +89,11 @@ public class BoxService {
         boxRepository.save(box);
 
         return box.getId();
+    }
+
+    private Long getNextCursorId(List<Box> boxes) {
+        if (boxes.isEmpty()) return null;
+        Long nextCursor = boxes.getLast().getId();
+        return nextCursor == null ? -1 : nextCursor;
     }
 }
