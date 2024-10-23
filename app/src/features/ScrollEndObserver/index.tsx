@@ -15,11 +15,11 @@ const ScrollEndObserver: React.FC<Props> = ({ children, onScrollEnd }) => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry.isIntersecting) return;
-        console.log('intersecting!');
         onScrollEnd();
       },
       {
-        root: root.current,
+        root: null,
+        rootMargin: '100px',
       },
     );
 

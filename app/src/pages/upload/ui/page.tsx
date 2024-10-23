@@ -49,7 +49,6 @@ export const UploadPage: React.FC = () => {
 
   const onClickUploadButton = methods.handleSubmit(async (data) => {
     const assemble: BoxCreation = { ...data, uploader: nickname as string };
-    console.log({ assemble });
     withValidation(assemble, createModal, async () => {
       try {
         await upload(assemble);

@@ -59,7 +59,5 @@ export const useNicknameChanger = () => {
     [],
   );
 
-  console.log({ open });
-
   return open;
 };
