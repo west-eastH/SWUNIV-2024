@@ -15,8 +15,10 @@ export const Mobile: React.FC<Props> = ({ header, children }) => {
       <Outlet />
       <AppLayout>
         <Header children={header} />
-        <article className="flex flex-col flex-1 flex-shrink-0">
-          <article className="col flex-1 h-full p-[16px]">{children}</article>
+        <article className="flex flex-col flex-1 flex-shrink-0 max-h-full overflow-auto">
+          <article className="col flex-1 p-[16px] overflow-y-scroll">
+            {children}
+          </article>
           <GNB />
         </article>
       </AppLayout>
