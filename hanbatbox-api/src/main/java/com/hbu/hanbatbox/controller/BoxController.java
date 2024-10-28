@@ -3,9 +3,8 @@ package com.hbu.hanbatbox.controller;
 import com.hbu.hanbatbox.controller.dto.BoxListDetails;
 import com.hbu.hanbatbox.dto.BoxSaveDto;
 import com.hbu.hanbatbox.service.BoxService;
-
+import jakarta.validation.Valid;
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +34,7 @@ public class BoxController {
 
   @PostMapping(value = "/uploads", consumes = {MediaType.APPLICATION_JSON_VALUE,
       MediaType.MULTIPART_FORM_DATA_VALUE})
-  public ResponseEntity<Long> uploads(@RequestPart BoxSaveDto data,
+  public ResponseEntity<Long> uploads(@Valid @RequestPart BoxSaveDto data,
                                       @RequestPart(name = "files") List<MultipartFile> files) {
 
     Long boxId = boxService.saveBoxWithItems(data, files);

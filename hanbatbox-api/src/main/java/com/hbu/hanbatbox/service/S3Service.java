@@ -61,6 +61,11 @@ public class S3Service {
   }
 
   private String createObjectKey(String title, String originFileName) {
+
+    if (originFileName == null || !originFileName.contains(".")) {
+      throw new IllegalArgumentException("올바른 파일을 추가해 주세요.");
+    }
+
     String extension = originFileName.split("\\.")[1];
     return "%d-%s.%s".formatted(System.currentTimeMillis(), title, extension);
   }
