@@ -51,7 +51,7 @@ const useBoxesQuery = () => {
   })();
 
   const onSearch = (content: string) => {
-    debounce(() => setKeyword(content), 200)();
+    debounce(() => setKeyword(content), 500)();
   };
 
   const dataReturns = {
