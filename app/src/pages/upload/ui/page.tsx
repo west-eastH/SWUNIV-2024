@@ -18,6 +18,7 @@ import { urlPath } from '@app/config/router';
 import { FormProvider, useForm } from 'react-hook-form';
 import { fileUtils } from '@shared/utils';
 import { BoxCreation } from '@entities/upload-box';
+import { useLoading } from '@widgets/modal';
 
 const getFirstFileName = (files: File[]) => {
   if (files.length === 0) return;
@@ -30,6 +31,7 @@ export const UploadPage: React.FC = () => {
   const methods = useForm<BoxCreation>();
   const { createModal } = useModal();
   const { nickname } = useNameManager();
+  const { onLoading, finishLoading } = useLoading();
 
   const setFileFormStates = (files: File[]) => methods.setValue('files', files);
   const setTitle = (title?: string) =>
@@ -51,10 +53,13 @@ export const UploadPage: React.FC = () => {
     const assemble: BoxCreation = { ...data, uploader: nickname as string };
     withValidation(assemble, createModal, async () => {
       try {
+        onLoading();
         await upload(assemble);
         navigate(urlPath.uploadComplete);
       } catch (error) {
         console.error(error);
+      } finally {
+        finishLoading();
       }
     });
   });

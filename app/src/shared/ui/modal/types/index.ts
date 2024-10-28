@@ -6,8 +6,9 @@ type NodeProps = {
 
 export type Modal = {
   id: string;
+  open: boolean;
   node: (p: NodeProps) => ReactNode;
-  header: ReactElement;
+  header?: ReactElement;
   options?: {
     noContent?: boolean;
     onConfirm?: () => void;
@@ -20,7 +21,5 @@ export type ModalContext = {
   modals: Modal[];
   closeById: (id: string) => void;
   openById: (id: string) => void;
-  createModal: (
-    props: Omit<Modal, 'id'>,
-  ) => [id: string, open: () => void, close: () => void];
+  createModal: (props: Omit<Modal, 'open' | 'id'> & { id?: string }) => string;
 };
