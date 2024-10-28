@@ -3,11 +3,12 @@ import { useMemo, useState } from 'react';
 import { generateRandomNickname, useNameManager } from '@features/nickname';
 
 export const useNicknameChanger = () => {
-  const { createModal } = useModal();
+  const { createModal, openById } = useModal();
 
-  const [_, open] = useMemo(
+  const id = useMemo(
     () =>
       createModal({
+        id: 'nickname-changer',
         header: (
           <div className="w-full flex justify-center">
             <Typo size={24} bold>
@@ -59,5 +60,5 @@ export const useNicknameChanger = () => {
     [],
   );
 
-  return open;
+  return () => openById(id);
 };
