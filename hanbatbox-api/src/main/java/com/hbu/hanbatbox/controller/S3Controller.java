@@ -27,7 +27,7 @@ public class S3Controller {
       @RequestBody Map<String, String> data,
       HttpServletResponse response) throws IOException {
 
-    String inputPassword = data.get("password");
+    String inputPassword = data.getOrDefault("password", "");
     if (!s3Service.validatePassword(id, inputPassword)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
     }
