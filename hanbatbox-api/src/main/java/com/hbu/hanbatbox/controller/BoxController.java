@@ -35,7 +35,7 @@ public class BoxController {
   @PostMapping(value = "/uploads", consumes = {MediaType.APPLICATION_JSON_VALUE,
       MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<Long> uploads(@Valid @RequestPart BoxSaveDto data,
-                                      @RequestPart(name = "files") List<MultipartFile> files) {
+      @RequestPart(name = "files") List<MultipartFile> files) {
 
     Long boxId = boxService.saveBoxWithItems(data, files);
 

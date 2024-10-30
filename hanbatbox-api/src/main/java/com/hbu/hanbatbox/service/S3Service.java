@@ -1,8 +1,8 @@
 package com.hbu.hanbatbox.service;
 
 import com.hbu.hanbatbox.domain.Box;
-import com.hbu.hanbatbox.repository.BoxRepository;
 import com.hbu.hanbatbox.domain.Item;
+import com.hbu.hanbatbox.repository.BoxRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -148,7 +148,6 @@ public class S3Service {
   public void downloadMultipleFiles(String title, String[] objectKeys, HttpServletResponse response)
       throws IOException {
 
-    long fileSize = 0;
     response.setContentType("application/octet-stream");
     response.setHeader("Content-Disposition",
         "attachment; filename=\"" + URLEncoder.encode(title, StandardCharsets.UTF_8) + "\";");
@@ -156,23 +155,19 @@ public class S3Service {
 
     try (ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream())) {
       for (String objectKey : objectKeys) {
-        InputStream inputStream = downloads(objectKey);
+        try (InputStream inputStream = downloads(objectKey)) {
+          ZipEntry zipEntry = new ZipEntry(objectKey);
+          zipOut.putNextEntry(zipEntry);
 
-        ZipEntry zipEntry = new ZipEntry(objectKey);
-        zipOut.putNextEntry(zipEntry);
-        fileSize += zipEntry.getCompressedSize();
+          byte[] buffer = new byte[4096];
+          int bytesRead;
+          while ((bytesRead = inputStream.read(buffer)) != -1) {
+            zipOut.write(buffer, 0, bytesRead);
+          }
 
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-          zipOut.write(buffer, 0, bytesRead);
+          zipOut.closeEntry();
         }
-
-        zipOut.closeEntry();
-        inputStream.close();
       }
     }
-
-    response.setContentLengthLong(fileSize);
   }
 }
