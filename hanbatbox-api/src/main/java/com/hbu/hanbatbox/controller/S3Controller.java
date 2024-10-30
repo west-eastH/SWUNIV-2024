@@ -37,11 +37,12 @@ public class S3Controller {
     }
 
     String[] objectKeys = s3Service.getObjectKeysByBoxId(id);
-    String title = s3Service.getBoxTitleById(id) + ".zip";
+    System.out.println(objectKeys.length);
 
     if (objectKeys.length == 1) {
-      s3Service.downloadSingleFile(title, objectKeys[0], response);
+      s3Service.downloadSingleFile(objectKeys[0], objectKeys[0], response);
     } else {
+      String title = s3Service.getBoxTitleById(id) + ".zip";
       s3Service.downloadMultipleFiles(title, objectKeys, response);
     }
   }
