@@ -1,33 +1,32 @@
 package com.hbu.hanbatbox.service;
 
+import com.hbu.hanbatbox.controller.dto.S3FileDetails;
 import com.hbu.hanbatbox.domain.Box;
 import com.hbu.hanbatbox.domain.Item;
 import com.hbu.hanbatbox.repository.BoxRepository;
-import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+
+import java.io.*;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
-import software.amazon.awssdk.services.s3.model.HeadObjectResponse;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class S3Service {
 
   private final S3Client s3Client;
@@ -81,7 +80,8 @@ public class S3Service {
     return objectKey;
   }
 
-  public InputStream downloads(String objectKey) throws RuntimeException {
+
+  public ResponseInputStream<GetObjectResponse> downloads(String objectKey) throws RuntimeException {
     return s3Client.getObject(buildGetObjectRequest(objectKey));
   }
 
@@ -120,54 +120,76 @@ public class S3Service {
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Box not found"));
   }
 
-  public void downloadSingleFile(String title, String objectKey, HttpServletResponse response)
-      throws IOException {
-    InputStream inputStream = downloads(objectKey);
-    long fileSize = getFileSize(objectKey);
 
-    response.setContentType("application/octet-stream");
-    response.setContentLengthLong(fileSize);
-    response.setHeader("Content-Disposition",
-        "attachment; filename=\"" + URLEncoder.encode(title, StandardCharsets.UTF_8) + "\";");
-    response.setHeader("Content-Transfer-Encoding", "binary");
-
-    try (OutputStream outputStream = response.getOutputStream()) {
-      byte[] buffer = new byte[4096];
-      int bytesRead;
-
-      while ((bytesRead = inputStream.read(buffer)) != -1) {
-        outputStream.write(buffer, 0, bytesRead);
-      }
-
-      outputStream.flush();
+  public S3FileDetails downloadFile(Long id, String password) {
+    if (!validatePassword(id, password)) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
     }
 
-    inputStream.close();
+    Box box = boxRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Box not found"));
+
+    String[] objectKeys = getObjectKeysByBoxId(id);
+
+    if (isSingleFile(objectKeys)) {
+      return downloadSingleFile(objectKeys[0], objectKeys[0], box.getFileSize());
+    }
+
+    String title = getBoxTitleById(id) + ".zip";
+    return downloadMultipleFiles(title, objectKeys, box.getFileSize());
   }
 
-  public void downloadMultipleFiles(String title, String[] objectKeys, HttpServletResponse response)
-      throws IOException {
+  private S3FileDetails downloadSingleFile(String title, String objectKey, Long fileSize) {
+    ResponseInputStream<GetObjectResponse> s3Stream = downloads(objectKey);
+    try {
+      byte[] bytes = s3Stream.readAllBytes();
+      return new S3FileDetails(title, fileSize, bytes);
+    } catch (IOException ex) {
+      ex.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "external file i/o error");
+    }
+  }
 
-    response.setContentType("application/octet-stream");
-    response.setHeader("Content-Disposition",
-        "attachment; filename=\"" + URLEncoder.encode(title, StandardCharsets.UTF_8) + "\";");
-    response.setHeader("Content-Transfer-Encoding", "binary");
+  private S3FileDetails downloadMultipleFiles(String title, String[] objectKeys, Long fileSize) {
+    try (ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
+         ZipOutputStream zipOut = new ZipOutputStream(byteOutput)) {
 
-    try (ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream())) {
       for (String objectKey : objectKeys) {
-        try (InputStream inputStream = downloads(objectKey)) {
-          ZipEntry zipEntry = new ZipEntry(objectKey);
-          zipOut.putNextEntry(zipEntry);
-
-          byte[] buffer = new byte[4096];
-          int bytesRead;
-          while ((bytesRead = inputStream.read(buffer)) != -1) {
-            zipOut.write(buffer, 0, bytesRead);
-          }
-
+        try (ResponseInputStream<GetObjectResponse> s3Stream = downloads(objectKey)) {
+          enterZip(zipOut, objectKey);
+          write(zipOut, s3Stream);
           zipOut.closeEntry();
+        } catch (IOException e) {
+          System.err.println("Error writing file to zip for object key: " + objectKey + ", error: " + e.getMessage());
         }
       }
+
+      zipOut.close();
+      return new S3FileDetails(title, fileSize, byteOutput.toByteArray());
+    } catch (IOException e) {
+      throw new RuntimeException("Failed to create zip file", e);
     }
   }
+
+  private void write(ZipOutputStream zipOutputStream, ResponseInputStream<GetObjectResponse> content) {
+    try {
+      zipOutputStream.write(content.readAllBytes());
+    } catch (IOException e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "external file i/o error");
+    }
+  }
+
+  private void enterZip(ZipOutputStream zipOutputStream, String key) {
+    ZipEntry entry = new ZipEntry(key);
+    try {
+      zipOutputStream.putNextEntry(entry);
+    } catch (IOException e) {
+      e.printStackTrace();
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "external file i/o error");
+    }
+  }
+
+  private boolean isSingleFile(String[] keys) {
+    return keys.length == 1;
+  }
+
 }
