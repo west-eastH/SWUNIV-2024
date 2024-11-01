@@ -8,8 +8,8 @@ import {
 } from '@features/nickname';
 import {
   MetadataInputs,
-  upload,
   UploadFileList,
+  useBoxUploadMutation,
   withValidation,
 } from '@features/upload-form';
 import { FileUpload } from '@widgets/file-upload';
@@ -29,9 +29,10 @@ export const UploadPage: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const navigate = useNavigate();
   const methods = useForm<BoxCreation>();
-  const { createModal } = useModal();
+  const { createModal, openById } = useModal();
   const { nickname } = useNameManager();
   const { onLoading, finishLoading } = useLoading();
+  const { mutateAsync } = useBoxUploadMutation();
 
   const setFileFormStates = (files: File[]) => methods.setValue('files', files);
   const setTitle = (title?: string) =>
@@ -51,10 +52,10 @@ export const UploadPage: React.FC = () => {
 
   const onClickUploadButton = methods.handleSubmit(async (data) => {
     const assemble: BoxCreation = { ...data, uploader: nickname as string };
-    withValidation(assemble, createModal, async () => {
+    withValidation(assemble, createModal, openById, async () => {
       try {
         onLoading();
-        await upload(assemble);
+        await mutateAsync(assemble);
         navigate(urlPath.uploadComplete);
       } catch (error) {
         console.error(error);
@@ -99,7 +100,11 @@ export const UploadPage: React.FC = () => {
           >
             업로드
           </Button>
-          <Button theme="white" className="flex-1">
+          <Button
+            theme="white"
+            className="flex-1"
+            onClick={() => navigate(urlPath.root)}
+          >
             업로드 취소
           </Button>
         </div>

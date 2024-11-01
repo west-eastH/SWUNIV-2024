@@ -6,35 +6,49 @@ const validStringField = (field?: string) => field?.trim() === '';
 
 const createErrorModal = (
   createModal: ModalContext['createModal'],
+  openById: (id: string) => void,
   message: string,
 ) => {
-  const [_, open] = createModal({
+  const id = createModal({
     header: <></>,
     node: () => <Typo size={14}>{message}</Typo>,
   });
 
-  open();
+  setTimeout(() => openById(id), 10);
 };
 
 export const withValidation = (
   body: BoxCreation,
   createModal: ModalContext['createModal'],
+  openById: (id: string) => void,
   callback: () => void,
 ) => {
-  console.log('withValidation');
   if (validStringField(body.title)) {
-    return createErrorModal(createModal, '제목을 입력해주세요.');
+    return createErrorModal(createModal, openById, '제목을 입력해주세요.');
   }
 
   if (validStringField(body.uploader)) {
     return createErrorModal(
       createModal,
+      openById,
       '닉네임을 4글자 이상으로 설정해주세요.',
     );
   }
 
+  if (validStringField(body.password)) {
+    return createErrorModal(
+      createModal,
+      openById,
+      '비밀번호를 4자리 이상 입력해주세요.',
+    );
+  }
+
   if (body.files.length === 0) {
-    return createErrorModal(createModal, '파일을 1개 이상 업로드해주세요.');
+    return createErrorModal(
+      createModal,
+      openById,
+      '파일을 1개 이상 업로드해주세요.',
+    );
   }
 
   callback();
