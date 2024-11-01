@@ -1,13 +1,15 @@
 package com.hbu.hanbatbox.controller;
 
+import com.hbu.hanbatbox.controller.dto.Password;
+import com.hbu.hanbatbox.controller.dto.S3FileDetails;
 import com.hbu.hanbatbox.repository.BoxRepository;
+import com.hbu.hanbatbox.service.DownloadResponseBuilder;
 import com.hbu.hanbatbox.service.S3Service;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,42 +23,26 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 @RequestMapping("/files")
 @RequiredArgsConstructor
+@Slf4j
 public class S3Controller {
 
   private final S3Service s3Service;
   private final BoxRepository boxRepository;
 
-  @PostMapping(value = "/downloads/{id}", consumes = {MediaType.TEXT_PLAIN_VALUE,
-      MediaType.APPLICATION_JSON_VALUE})
-  public void downloads(@PathVariable("id") Long id, @RequestBody Map<String, String> data,
-      HttpServletResponse response) throws IOException {
-
-    String inputPassword = data.getOrDefault("password", "");
-    if (!s3Service.validatePassword(id, inputPassword)) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
-    }
-
-    String[] objectKeys = s3Service.getObjectKeysByBoxId(id);
-    System.out.println(objectKeys.length);
-
-    if (objectKeys.length == 1) {
-      s3Service.downloadSingleFile(objectKeys[0], objectKeys[0], response);
-    } else {
-      String title = s3Service.getBoxTitleById(id) + ".zip";
-      s3Service.downloadMultipleFiles(title, objectKeys, response);
-    }
+  @PostMapping("/downloads/{id}")
+  public ResponseEntity<?> downloads(@PathVariable("id") Long id, @RequestBody Password body) {
+    S3FileDetails fileDetails = s3Service.downloadFile(id, body.password());
+    HttpHeaders responseHeader = DownloadResponseBuilder.getResponseHeader(fileDetails.fileName(), fileDetails.size());
+    log.warn("파일 다운로드 완료! (" + fileDetails.fileName() + ")");
+    return new ResponseEntity(fileDetails.content(), responseHeader, HttpStatus.OK);
   }
 
   @DeleteMapping(value = "/{id}")
-  public ResponseEntity<Void> deleteFile(@PathVariable("id") Long id, @RequestParam String password)
-      throws IOException {
-
+  public ResponseEntity<Void> deleteFile(@PathVariable("id") Long id, @RequestParam String password) {
     if (!s3Service.validatePassword(id, password)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
     }
-
     boxRepository.deleteById(id);
-
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }
