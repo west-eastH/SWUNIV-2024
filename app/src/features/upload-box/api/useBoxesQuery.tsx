@@ -19,9 +19,9 @@ const useStore = create<StoreStates>((set) => ({
   setNextCursor: (cursor) => set({ cursor }),
 }));
 
-const debounce = (callback: () => void, ms: number) => {
-  let timerId: number | undefined = undefined;
+let timerId: number | undefined = undefined;
 
+const debounce = (callback: () => void, ms: number) => {
   return () => {
     if (timerId) {
       clearTimeout(timerId);
