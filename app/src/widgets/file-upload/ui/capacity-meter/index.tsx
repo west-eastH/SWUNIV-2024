@@ -1,17 +1,17 @@
 import React from 'react';
-import ProgressBar from "@ramonak/react-progress-bar";
-import { palette } from "@shared/style";
-import { Typo } from "@shared/ui";
+import ProgressBar from '@ramonak/react-progress-bar';
+import { palette } from '@shared/style';
+import { Typo } from '@shared/ui';
 
 type Props = {
   current: number;
-}
+};
 
 enum Unit {
   KB = 1024,
   MB = Unit.KB * 1024,
   GB = Unit.MB * 1024,
-  MAXIMUM = Unit.GB * 2,
+  MAXIMUM = Unit.MB * 500,
 }
 
 const getUnit = (num: number, unit: Unit) => {
@@ -23,7 +23,7 @@ const getUnit = (num: number, unit: Unit) => {
 };
 
 const getCapacity = (size: number) => {
-  console.log({ size })
+  console.log({ size });
   if (size >= Unit.MB && size < Unit.GB) {
     return getUnit(size, Unit.MB);
   }
@@ -54,20 +54,27 @@ export const CapacityMeter: React.FC<Props> = ({ current }) => {
       <ProgressBar
         completed={completed}
         height="9px"
-        bgColor={palette["hb-light-blue"]}
+        bgColor={palette['hb-light-blue']}
         baseBgColor="#B0B7C8"
         borderRadius="35px"
         isLabelVisible={false}
       />
       <div className="flex gap-x-1 self-end mr-[5px] py-1.5">
-        <Typo size={11} color="light-gray" bold>제한 용량</Typo>
+        <Typo size={11} color="light-gray" bold>
+          제한 용량
+        </Typo>
         <div className="flex all-center gap-x-1.5">
-          <Typo size={11} color="light-blue" bold>{indicator}</Typo>
-          <Typo size={11} color="light-blue" bold>/</Typo>
-          <Typo size={11} color="light-blue" bold>2GB</Typo>
+          <Typo size={11} color="light-blue" bold>
+            {indicator}
+          </Typo>
+          <Typo size={11} color="light-blue" bold>
+            /
+          </Typo>
+          <Typo size={11} color="light-blue" bold>
+            500MB
+          </Typo>
         </div>
       </div>
-
     </div>
   );
-}
+};

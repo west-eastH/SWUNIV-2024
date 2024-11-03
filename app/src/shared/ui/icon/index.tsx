@@ -10,6 +10,7 @@ import BlueFile from '@shared/assets/icon/file.svg';
 import GrayFile from '@shared/assets/icon/gray-file.svg';
 import HbuDownload from '@shared/assets/icon/hbu-download.svg';
 import HomeWhite from '@shared/assets/icon/home-white.svg';
+import BlueArrow from '@shared/assets/icon/blue-left-arrow.svg';
 
 export const Icon = {
   GNB: {
@@ -32,4 +33,5 @@ export const Icon = {
   GrayFile,
   HbuDownload,
   HomeWhite,
+  BlueArrow,
 };

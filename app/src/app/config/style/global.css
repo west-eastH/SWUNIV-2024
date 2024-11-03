@@ -147,3 +147,7 @@ input[type='number'] {
 .all-center {
     @apply items-center justify-center;
 }
+
+.gray-bg {
+    background: rgba(30, 34, 41, 0.0392);
+}
