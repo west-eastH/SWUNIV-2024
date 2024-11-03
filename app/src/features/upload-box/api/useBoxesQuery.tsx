@@ -31,8 +31,7 @@ const debounce = (callback: () => void, ms: number) => {
 };
 
 const useBoxesQuery = () => {
-  const { keyword, type, changeSearchType, setKeyword } = useStore();
-
+  const { keyword, type, changeSearchType, setKeyword, cursor } = useStore();
   const { data, fetchNextPage, ...query } = useInfiniteQuery({
     queryKey: ['box-list', keyword, type],
     queryFn: ({ pageParam }) =>
@@ -70,6 +69,7 @@ const useBoxesQuery = () => {
     getNextData,
     changeSearchType,
     onSearch,
+    endOfPage: !cursor || cursor === 1,
   };
 };
 

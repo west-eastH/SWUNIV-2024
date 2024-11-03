@@ -39,7 +39,12 @@ export const UploadPage: React.FC = () => {
     title && methods.setValue('title', fileUtils.removeExt(title));
 
   const onUpload = (files: File[]) => {
-    const fillAutoTitle = (files: File[]) => setTitle(getFirstFileName(files));
+    const fillAutoTitle = (files: File[]) => {
+      if (methods.getValues('title')?.trim() !== '') {
+        return;
+      }
+      setTitle(getFirstFileName(files));
+    };
     const callback = (prev: File[]) => {
       const result = prev.concat(files);
       fillAutoTitle(result);

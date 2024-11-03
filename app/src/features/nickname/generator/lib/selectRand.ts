@@ -1,7 +1,12 @@
 export const selectRand = (arr: string[]) => {
-  const len  = arr.length;
+  const len = arr.length;
   const random = getRandom(len);
-  return arr[random];
+  let result = arr[random];
+  while (!result) {
+    const r = getRandom(len);
+    result = arr[r];
+  }
+  return result;
 };
 
-const getRandom = (max: number) => Math.floor(Math.random() * max) - 1;
+const getRandom = (max: number) => Math.floor(Math.random() * max);
