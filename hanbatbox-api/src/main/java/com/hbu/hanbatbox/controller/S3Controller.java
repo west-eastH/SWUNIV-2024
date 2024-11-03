@@ -5,7 +5,6 @@ import com.hbu.hanbatbox.controller.dto.S3FileDetails;
 import com.hbu.hanbatbox.repository.BoxRepository;
 import com.hbu.hanbatbox.service.DownloadResponseBuilder;
 import com.hbu.hanbatbox.service.S3Service;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -32,13 +31,15 @@ public class S3Controller {
   @PostMapping("/downloads/{id}")
   public ResponseEntity<?> downloads(@PathVariable("id") Long id, @RequestBody Password body) {
     S3FileDetails fileDetails = s3Service.downloadFile(id, body.password());
-    HttpHeaders responseHeader = DownloadResponseBuilder.getResponseHeader(fileDetails.fileName(), fileDetails.size());
+    HttpHeaders responseHeader = DownloadResponseBuilder.getResponseHeader(fileDetails.fileName(),
+        fileDetails.size());
     log.warn("파일 다운로드 완료! (" + fileDetails.fileName() + ")");
-    return new ResponseEntity(fileDetails.content(), responseHeader, HttpStatus.OK);
+    return new ResponseEntity<>(fileDetails.content(), responseHeader, HttpStatus.OK);
   }
 
   @DeleteMapping(value = "/{id}")
-  public ResponseEntity<Void> deleteFile(@PathVariable("id") Long id, @RequestParam String password) {
+  public ResponseEntity<Void> deleteFile(@PathVariable("id") Long id,
+      @RequestParam String password) {
     if (!s3Service.validatePassword(id, password)) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
     }

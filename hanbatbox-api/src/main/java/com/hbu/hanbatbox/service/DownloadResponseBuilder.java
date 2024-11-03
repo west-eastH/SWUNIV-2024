@@ -1,10 +1,9 @@
 package com.hbu.hanbatbox.service;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 public class DownloadResponseBuilder {
 
