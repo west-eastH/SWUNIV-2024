@@ -27,6 +27,7 @@ const modalStore = useModalStore;
 const ModalProvider: React.FC<Props> = ({ children }) => {
   const { modals, setModals, addModal } = useModalStore();
   const isOpenAnyModal = modals.some((modal) => modal.open);
+  console.debug({ modals });
 
   const createModal: Context['createModal'] = ({
     id,

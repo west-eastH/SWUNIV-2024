@@ -3,4 +3,5 @@ export const urlPath = Object.freeze({
   upload: '/upload',
   uploadComplete: '/upload/complete',
   menu: '/menu',
+  peopleWithin: '/menu/with',
 });
