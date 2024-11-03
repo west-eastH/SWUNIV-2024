@@ -8,7 +8,6 @@ import React, {
 import clsx from 'clsx';
 import { Button, Input, Typo, useModal } from '@shared/ui';
 import { download } from '@features/upload-box';
-import { useLoading } from '@widgets/modal';
 
 type Props = { children: ReactNode } & DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -47,7 +46,7 @@ type DownloadBodyProps = {
 export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
   const [password, setPassword] = useState('');
   const { createModal, openById, closeById } = useModal();
-  const { onLoading, finishLoading } = useLoading();
+  // const { onLoading, finishLoading } = useLoading();
 
   const close = () => closeById(`download-${id}`);
 

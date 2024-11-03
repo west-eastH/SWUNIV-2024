@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 import ModalContext from '@shared/ui/modal/config/ModalContext';
 import { Modal as ModalType, ModalContext as Context } from '../types';
 import { nanoid } from 'nanoid';

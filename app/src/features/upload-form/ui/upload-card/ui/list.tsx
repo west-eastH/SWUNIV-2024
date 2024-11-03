@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { UploadCard } from '@features/upload-form';
 import { useFormContext } from 'react-hook-form';
-import { UploadCreation } from '@features/upload-form/types';
+import { BoxCreation } from '@entities/upload-box';
 
 type Props = {
   data: File[];
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const UploadFileList: React.FC<Props> = ({ data, callback }) => {
-  const { setValue } = useFormContext<UploadCreation>();
+  const { setValue } = useFormContext<BoxCreation>();
 
   const remove = (file: File) => {
     callback((prev) => {

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Input, Typo } from '@shared/ui';
 import { useFormContext } from 'react-hook-form';
-import { UploadCreation } from '@features/upload-form/types';
+import { BoxCreation } from '@entities/upload-box';
 
 export const MetadataInputs: React.FC = () => {
-  const { register } = useFormContext<UploadCreation>();
+  const { register } = useFormContext<BoxCreation>();
 
   return (
     <div className="col gap-y-[24px]">

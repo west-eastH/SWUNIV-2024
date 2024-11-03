@@ -1,5 +1,4 @@
 import React from 'react';
-import { urlPath } from '@app/config/router';
 import { useNavigate } from 'react-router';
 import { Icon } from '@shared/ui';
 
