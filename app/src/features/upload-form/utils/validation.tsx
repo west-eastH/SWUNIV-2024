@@ -43,7 +43,7 @@ export const withValidation = (
     );
   }
 
-  if (body.files.length === 0) {
+  if (!body.files || body.files.length === 0) {
     return createErrorModal(
       createModal,
       openById,
