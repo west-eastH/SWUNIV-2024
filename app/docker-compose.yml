@@ -3,6 +3,7 @@ services:
   app:
     container_name: hbu_box_app
     build:
+      context: .
       dockerfile: ./Dockerfile
     ports:
       - "3000:80"
