@@ -8,6 +8,7 @@ import React, {
 import clsx from 'clsx';
 import { Button, Input, Typo, useModal } from '@shared/ui';
 import { download } from '@features/upload-box';
+import { useLoading } from '@widgets/modal';
 
 type Props = { children: ReactNode } & DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -46,18 +47,17 @@ type DownloadBodyProps = {
 export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
   const [password, setPassword] = useState('');
   const { createModal, openById, closeById } = useModal();
-  // const { onLoading, finishLoading } = useLoading();
+  const { onLoading, finishLoading } = useLoading();
 
   const close = () => closeById(`download-${id}`);
 
   const onClickDownload = async () => {
     try {
+      onLoading();
       const { blob, filename } = await download(id, password);
-      closeById(`download-${id}`);
       const anchor = document.createElement('a');
       anchor.href = URL.createObjectURL(blob);
       anchor.download = filename;
-
       anchor.dispatchEvent(
         new MouseEvent('click', { bubbles: true, cancelable: true }),
       );
@@ -67,6 +67,9 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
       openById('password-invalid-error');
     } finally {
       console.log('finally');
+      finishLoading();
+      closeById(`download-${id}`);
+      openById('download-complete');
     }
   };
 
