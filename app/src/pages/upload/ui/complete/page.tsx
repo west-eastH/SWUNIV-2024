@@ -3,8 +3,6 @@ import { Button, Icon, Typo } from '@shared/ui';
 import { Mobile } from '@features/layout';
 import { useNavigate } from 'react-router';
 import { urlPath } from '@app/config/router';
-import { queryClient } from '@shared/config';
-import { boxQueryKeys } from '@shared/query';
 import { useBoxesQuery } from '@features/upload-box';
 
 export const FileUploadCompletePage: React.FC = () => {
