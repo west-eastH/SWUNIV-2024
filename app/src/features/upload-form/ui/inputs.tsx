@@ -25,9 +25,6 @@ export const MetadataInputs: React.FC = () => {
           비밀번호
         </Typo>
         <Input type="password" placeholder="****" {...register('password')} />
-        <Typo size={10} color="light-blue" className="self-end">
-          * 비밀번호 생략 시 서비스 이용 지역 내에 자료가 모두 공개됩니다.
-        </Typo>
       </div>
     </div>
   );
