@@ -1,6 +1,7 @@
 import { apiClient, queryClient } from '@shared/config';
 import { BoxCreation } from '@entities/upload-box';
 import { useMutation } from '@tanstack/react-query';
+import { boxQueryKeys } from '@shared/query';
 
 export const upload = (body: BoxCreation): Promise<number> =>
   apiClient.post('/boxes/uploads', createFormData(body), {
@@ -30,6 +31,7 @@ export const useBoxUploadMutation = () =>
     mutationFn: upload,
     onSuccess: () =>
       queryClient.invalidateQueries({
-        queryKey: ['box-list'],
+        queryKey: [boxQueryKeys.list],
+        exact: false,
       }),
   });
