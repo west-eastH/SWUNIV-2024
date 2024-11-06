@@ -3,7 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { getBoxList } from './index';
 import { UploadBoxDetails } from '@entities/upload-box';
 import { boxQueryKeys } from '@shared/query';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 
 type StoreStates = {
   keyword?: string;
