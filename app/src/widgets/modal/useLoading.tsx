@@ -1,25 +1,15 @@
 import { useModal } from '@shared/ui';
-import { create } from 'zustand/react';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { square } from 'ldrs';
 
 square.register();
 
-type StoreStates = {
-  loading: boolean;
-  onLoading: () => void;
-  finishLoading: () => void;
-};
-
-const useStore = create<StoreStates>((set) => ({
-  loading: false,
-  onLoading: () => set({ loading: true }),
-  finishLoading: () => set({ loading: false }),
-}));
-
 const useLoading = () => {
   const { createModal, openById, closeById } = useModal();
-  const states = useStore();
+  const [loading, setLoading] = useState(false);
+
+  const onLoading = () => setLoading(true);
+  const finishLoading = () => setLoading(false);
 
   const id = useMemo(
     () =>
@@ -45,22 +35,28 @@ const useLoading = () => {
           noContent: true,
         },
       }),
-    [],
+    [createModal],
   );
 
   useEffect(() => {
-    if (states.loading) {
-      return openById(id);
+    console.log(`[useLoading] useEffect: ${loading}`);
+    if (loading) {
+      openById('loading');
     }
 
-    if (!states.loading) {
-      return closeById(id);
+    if (!loading) {
+      closeById('loading');
     }
 
     return () => closeById(id);
-  }, [states.loading, id]);
+  }, [loading, id]);
 
-  return { ...states, open: () => openById(id), close: () => closeById(id) };
+  return {
+    onLoading,
+    finishLoading,
+    open: () => openById(id),
+    close: () => closeById(id),
+  };
 };
 
 export default useLoading;
