@@ -3,9 +3,20 @@ import { Button, Icon, Typo } from '@shared/ui';
 import { Mobile } from '@features/layout';
 import { useNavigate } from 'react-router';
 import { urlPath } from '@app/config/router';
+import { queryClient } from '@shared/config';
+import { boxQueryKeys } from '@shared/query';
+import { useBoxesQuery } from '@features/upload-box';
 
 export const FileUploadCompletePage: React.FC = () => {
   const navigate = useNavigate();
+  const {
+    query: { refetch },
+  } = useBoxesQuery();
+
+  const onClickRedirectHome = () => {
+    refetch();
+    navigate(urlPath.root);
+  };
 
   return (
     <Mobile
@@ -39,7 +50,7 @@ export const FileUploadCompletePage: React.FC = () => {
           icon={<Icon.HomeWhite />}
           className="h-[42px] mb-[26px] w-[176px]"
           textSize={14}
-          onClick={() => navigate(urlPath.root)}
+          onClick={onClickRedirectHome}
         >
           홈으로
         </Button>
