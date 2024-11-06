@@ -1,10 +1,11 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import ModalContext from '@shared/ui/modal/config/ModalContext';
 import { Modal as ModalType, ModalContext as Context } from '../types';
 import { nanoid } from 'nanoid';
 import Modal from '../ui/Modal';
 import { Dimmed } from '@shared/ui/modal/ui/Dimmed';
 import { create } from 'zustand/react';
+import { Typo } from '@shared/ui';
 
 type Props = {
   children: ReactNode;
@@ -27,7 +28,7 @@ const modalStore = useModalStore;
 const ModalProvider: React.FC<Props> = ({ children }) => {
   const { modals, setModals, addModal } = useModalStore();
   const isOpenAnyModal = modals.some((modal) => modal.open);
-  console.debug({ modals });
+  console.log({ modals });
 
   const createModal: Context['createModal'] = ({
     id,
@@ -66,6 +67,47 @@ const ModalProvider: React.FC<Props> = ({ children }) => {
     setModals(updateToClose(id));
   };
 
+  useEffect(() => {
+    createModal({
+      id: 'cannot-access',
+      header: (
+        <div className="w-full flex justify-center">
+          <Typo size={20} bold>
+            서비스 접근 제한 지역
+          </Typo>
+        </div>
+      ),
+      node: () => (
+        <div className="col">
+          <Typo size={14} bold>
+            한밭대학교 지역이 아니므로 서비스에 접근할 수 없습니다 😱
+          </Typo>
+          <Typo size={14} bold>
+            교내 지역에서 다시 접근해주세요 🥹
+          </Typo>
+        </div>
+      ),
+    });
+
+    createModal({
+      id: 'download-complete',
+      header: (
+        <div className="w-full flex">
+          <Typo size={20} bold>
+            완료
+          </Typo>
+        </div>
+      ),
+      node: () => (
+        <div className="col">
+          <Typo size={14} bold>
+            다운로드가 완료되었습니다!
+          </Typo>
+        </div>
+      ),
+    });
+  }, []);
+
   return (
     <ModalContext.Provider value={{ modals, createModal, closeById, openById }}>
       {isOpenAnyModal && <Dimmed />}
@@ -79,8 +121,10 @@ const ModalProvider: React.FC<Props> = ({ children }) => {
   );
 };
 
-const checkExists = (id: string, modals: ModalType[]) =>
-  modals.findIndex((m) => m.id === id) !== -1;
+const checkExists = (id: string) => {
+  const modals = modalStore.getState().modals;
+  return modals.findIndex((m) => m.id === id) !== -1;
+};
 
 const generateId = () => nanoid(3);
 const update = (id: string, fragmentation: boolean) => {
