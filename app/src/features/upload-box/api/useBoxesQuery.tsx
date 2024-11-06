@@ -2,6 +2,7 @@ import { create } from 'zustand/react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getBoxList } from './index';
 import { UploadBoxDetails } from '@entities/upload-box';
+import { boxQueryKeys } from '@shared/query';
 
 type StoreStates = {
   keyword?: string;
@@ -33,7 +34,7 @@ const debounce = (callback: () => void, ms: number) => {
 const useBoxesQuery = () => {
   const { keyword, type, changeSearchType, setKeyword, cursor } = useStore();
   const { data, fetchNextPage, ...query } = useInfiniteQuery({
-    queryKey: ['box-list', keyword, type],
+    queryKey: [boxQueryKeys.list, keyword, type],
     queryFn: ({ pageParam }) =>
       getBoxList({
         keyword,
