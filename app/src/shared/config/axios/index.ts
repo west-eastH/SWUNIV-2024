@@ -13,7 +13,8 @@ export const downloadClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: undefined,
+  timeout: 100000,
+  responseType: 'arraybuffer',
 });
 
 apiClient.interceptors.response.use((res) => {
