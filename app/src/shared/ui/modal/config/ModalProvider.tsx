@@ -36,7 +36,7 @@ const ModalProvider: React.FC<Props> = ({ children }) => {
     header,
     options,
   }) => {
-    if (id && checkExists(id, modals)) return id;
+    if (id && checkExists(id)) return id;
 
     const newId = id ?? generateId();
     const newNode: ModalType = {
