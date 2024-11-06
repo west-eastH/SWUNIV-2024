@@ -3,6 +3,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { getBoxList } from './index';
 import { UploadBoxDetails } from '@entities/upload-box';
 import { boxQueryKeys } from '@shared/query';
+import { useEffect, useRef, useState } from 'react';
 
 type StoreStates = {
   keyword?: string;
@@ -11,6 +12,8 @@ type StoreStates = {
   changeSearchType: (type?: 'nickname' | 'title') => void;
   cursor?: number | -1;
   setNextCursor: (cursor: number | -1) => void;
+  isInitialFetch: boolean;
+  setIsInitialFetch: (isInitialFetch: boolean) => void;
 };
 
 const useStore = create<StoreStates>((set) => ({
@@ -18,6 +21,8 @@ const useStore = create<StoreStates>((set) => ({
   setKeyword: (keyword) => set({ keyword }),
   changeSearchType: (type) => set({ type }),
   setNextCursor: (cursor) => set({ cursor }),
+  isInitialFetch: false,
+  setIsInitialFetch: (isInitialFetch) => set({ isInitialFetch }),
 }));
 
 let timerId: number | undefined = undefined;
@@ -32,7 +37,15 @@ const debounce = (callback: () => void, ms: number) => {
 };
 
 const useBoxesQuery = () => {
-  const { keyword, type, changeSearchType, setKeyword, cursor } = useStore();
+  const {
+    keyword,
+    type,
+    changeSearchType,
+    setKeyword,
+    cursor,
+    isInitialFetch,
+    setIsInitialFetch,
+  } = useStore();
   const { data, fetchNextPage, ...query } = useInfiniteQuery({
     queryKey: [boxQueryKeys.list, keyword, type],
     queryFn: ({ pageParam }) =>
@@ -64,12 +77,20 @@ const useBoxesQuery = () => {
     fetchNextPage();
   };
 
+  useEffect(() => {
+    if (!isInitialFetch) return;
+    if (boxes.length !== 0) {
+      setIsInitialFetch(false);
+    }
+  }, [boxes, isInitialFetch]);
+
   return {
     data: dataReturns,
     query,
     getNextData,
     changeSearchType,
     onSearch,
+    isInitialFetch,
     endOfPage: !cursor || cursor === 1,
   };
 };

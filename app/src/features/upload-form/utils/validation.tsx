@@ -35,7 +35,7 @@ export const withValidation = (
     );
   }
 
-  if (validStringField(body.password)) {
+  if (body.password.length < 4) {
     return createErrorModal(
       createModal,
       openById,
