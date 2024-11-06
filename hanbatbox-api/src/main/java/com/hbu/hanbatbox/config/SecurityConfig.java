@@ -19,6 +19,7 @@ public class SecurityConfig {
             .requestMatchers(new IpAddressMatcher("223.194.160.0/24")).permitAll()
             .requestMatchers(new IpAddressMatcher("0:0:0:0:0:0:0:1")).permitAll()
             .requestMatchers(new IpAddressMatcher("127.0.0.1")).permitAll()
+            .requestMatchers(new IpAddressMatcher("125.242.221.200")).permitAll()
             .requestMatchers(new IpAddressMatcher("::1")).permitAll()
             .anyRequest().denyAll()
         )
