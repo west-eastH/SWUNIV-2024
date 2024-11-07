@@ -3,6 +3,7 @@ import { urlPath } from './consts/path';
 import { MainRouter } from '@pages/landing';
 import { FileUploadCompletePage, UploadPage } from '@pages/upload';
 import { MenuHome } from '@pages/menu';
+import { IpFilter } from '@features/access';
 
 export const router = createBrowserRouter([
   {
@@ -11,14 +12,26 @@ export const router = createBrowserRouter([
   },
   {
     path: urlPath.upload,
-    element: <UploadPage />,
+    element: (
+      <IpFilter>
+        <UploadPage />
+      </IpFilter>
+    ),
   },
   {
     path: urlPath.uploadComplete,
-    element: <FileUploadCompletePage />,
+    element: (
+      <IpFilter>
+        <FileUploadCompletePage />
+      </IpFilter>
+    ),
   },
   {
     path: urlPath.menu,
-    element: <MenuHome />,
+    element: (
+      <IpFilter>
+        <MenuHome />
+      </IpFilter>
+    ),
   },
 ]);
