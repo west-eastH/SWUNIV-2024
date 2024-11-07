@@ -1,13 +1,30 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Mobile } from '@features/layout';
 import DashboardPanel from '@widgets/dashboard-panel';
 import { Search, UploadBoxList, useBoxesQuery } from '@features/upload-box';
-import { Typo } from '@shared/ui';
+import { DownloadBody, DownloadHeader, Typo, useModal } from '@shared/ui';
+import { useSearchParams } from 'react-router-dom';
 
 export const Home: React.FC = () => {
   const { data, isInitialFetch } = useBoxesQuery();
+  const { createModal, openById } = useModal();
+  const [searchParams] = useSearchParams();
 
   if (!data) return null;
+
+  useEffect(() => {
+    const id = searchParams.get('downloadId');
+    if (!id) return;
+    const downloadModalId = createModal({
+      id: `download-${id}`,
+      header: <DownloadHeader />,
+      node: () => <DownloadBody id={Number(id)} />,
+      options: {
+        noContent: true,
+      },
+    });
+    openById(downloadModalId);
+  }, [searchParams]);
 
   return (
     <Mobile header="header-logo">

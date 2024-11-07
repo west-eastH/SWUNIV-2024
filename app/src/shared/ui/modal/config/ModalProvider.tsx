@@ -63,7 +63,10 @@ const ModalProvider: React.FC<Props> = ({ children }) => {
     if (modals.findIndex((m) => m.id === id) === -1) {
       return;
     }
-    setModals(updateToClose(id));
+
+    modals
+      .filter((m) => m.id === id)
+      .forEach((m) => setModals(updateToClose(m.id)));
   };
 
   useEffect(() => {

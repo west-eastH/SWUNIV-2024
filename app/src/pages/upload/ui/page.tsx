@@ -66,8 +66,8 @@ export const UploadPage: React.FC = () => {
     withValidation(assemble, createModal, openById, async () => {
       try {
         onLoading();
-        await mutateAsync(assemble);
-        navigate(urlPath.uploadComplete);
+        const id = await mutateAsync(assemble);
+        navigate(urlPath.uploadComplete, { state: { id } });
       } catch (error) {
         console.error(error);
       } finally {

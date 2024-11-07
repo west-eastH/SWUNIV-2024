@@ -1,12 +1,14 @@
-import React from 'react';
-import { Button, Icon, Typo } from '@shared/ui';
+import React, { useEffect } from 'react';
+import { Button, Icon, Typo, useModal } from '@shared/ui';
 import { Mobile } from '@features/layout';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { urlPath } from '@app/config/router';
 import { useBoxesQuery } from '@features/upload-box';
 
 export const FileUploadCompletePage: React.FC = () => {
+  const { createModal, openById } = useModal();
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     query: { refetch },
   } = useBoxesQuery();
@@ -15,6 +17,31 @@ export const FileUploadCompletePage: React.FC = () => {
     refetch();
     navigate(urlPath.root);
   };
+
+  const onClickCopyButton = () => {
+    const id = (location.state as { id: number })?.id;
+
+    if (!id) {
+      return alert('업로드 정보를 찾을 수 없습니다.');
+    }
+
+    const downloadUrl = window.location.origin + `?downloadId=${id}`;
+    window.navigator.clipboard
+      .writeText(downloadUrl)
+      .then(() => openById('copy-complete'));
+  };
+
+  useEffect(() => {
+    createModal({
+      id: 'copy-complete',
+      header: (
+        <Typo size={16} bold>
+          완료
+        </Typo>
+      ),
+      node: () => <Typo size={14}>다운로드 링크를 복사하였습니다.</Typo>,
+    });
+  }, []);
 
   return (
     <Mobile
@@ -38,7 +65,7 @@ export const FileUploadCompletePage: React.FC = () => {
           theme="white"
           className="h-fit !py-[4px] !px-[12px] !font-medium mt-[12px]"
         >
-          <Typo size={12} color="gray">
+          <Typo size={12} color="gray" onClick={onClickCopyButton}>
             다운로드 링크를 복사할래요.
           </Typo>
         </Button>
