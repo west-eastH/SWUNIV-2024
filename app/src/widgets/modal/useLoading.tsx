@@ -39,7 +39,6 @@ const useLoading = () => {
   );
 
   useEffect(() => {
-    console.log(`[useLoading] useEffect: ${loading}`);
     if (loading) {
       openById('loading');
     }

@@ -77,8 +77,8 @@ const ModalProvider: React.FC<Props> = ({ children }) => {
         </div>
       ),
       node: () => (
-        <div className="col">
-          <Typo size={14} bold>
+        <div className="col items-center">
+          <Typo size={14} className="text-wrap text-center w-3/4" bold>
             한밭대학교 지역이 아니므로 서비스에 접근할 수 없습니다 😱
           </Typo>
           <Typo size={14} bold>
