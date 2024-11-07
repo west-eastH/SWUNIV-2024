@@ -62,14 +62,13 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
         new MouseEvent('click', { bubbles: true, cancelable: true }),
       );
       URL.revokeObjectURL(anchor.href);
+      openById('download-complete');
     } catch (error) {
       console.log(error);
       openById('password-invalid-error');
     } finally {
-      console.log('finally');
       finishLoading();
       closeById(`download-${id}`);
-      openById('download-complete');
     }
   };
 
