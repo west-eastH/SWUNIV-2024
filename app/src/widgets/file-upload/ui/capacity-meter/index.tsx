@@ -7,23 +7,23 @@ type Props = {
   current: number;
 };
 
-enum Unit {
+export enum Unit {
   KB = 1024,
   MB = Unit.KB * 1024,
   GB = Unit.MB * 1024,
-  MAXIMUM = Unit.MB * 500,
+  MAXIMUM = Unit.MB * 300,
 }
 
 const getUnit = (num: number, unit: Unit) => {
   const mainUnit = Math.floor(num / unit);
   const remainingUnit = (num % unit) / unit;
-  console.log({ mainUnit, remainingUnit });
+  // console.log({ mainUnit, remainingUnit });
 
   return (mainUnit + remainingUnit).toFixed(2);
 };
 
 const getCapacity = (size: number) => {
-  console.log({ size });
+  // console.log({ size });
   if (size >= Unit.MB && size < Unit.GB) {
     return getUnit(size, Unit.MB);
   }
@@ -71,7 +71,7 @@ export const CapacityMeter: React.FC<Props> = ({ current }) => {
             /
           </Typo>
           <Typo size={11} color="light-blue" bold>
-            500MB
+            300MB
           </Typo>
         </div>
       </div>

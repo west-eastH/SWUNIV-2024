@@ -19,6 +19,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { fileUtils } from '@shared/utils';
 import { BoxCreation } from '@entities/upload-box';
 import { useLoading } from '@widgets/modal';
+import { Unit } from '@widgets/file-upload/ui/capacity-meter';
 
 const getFirstFileName = (files: File[]) => {
   if (files.length === 0) return;
@@ -39,6 +40,11 @@ export const UploadPage: React.FC = () => {
     title && methods.setValue('title', fileUtils.removeExt(title));
 
   const onUpload = (files: File[]) => {
+    const totalSize = files.reduce((prev, curr) => prev + curr.size, 0);
+    if (totalSize > Unit.MAXIMUM) {
+      return alert('파일 용량이 300MB 를 초과할 수 없습니다.');
+    }
+
     const fillAutoTitle = (files: File[]) => {
       if (methods.getValues('title')?.trim() !== '') {
         return;
