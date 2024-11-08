@@ -11,7 +11,7 @@ export const Announcer: React.FC<AnnounceState> = ({ src, profile }) => {
   } = profile;
 
   return (
-    <div className="min-h-[468px] announcer-radius overflow-hidden relative">
+    <div className="announcer-radius overflow-hidden relative">
       <img
         src={src}
         alt="people.png"
