@@ -4,9 +4,11 @@ import com.hbu.hanbatbox.controller.dto.S3FileDetails;
 import com.hbu.hanbatbox.domain.Box;
 import com.hbu.hanbatbox.domain.Item;
 import com.hbu.hanbatbox.repository.BoxRepository;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +21,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.core.async.AsyncRequestBody;
+import software.amazon.awssdk.core.async.BlockingInputStreamAsyncRequestBody;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.transfer.s3.S3TransferManager;
+import software.amazon.awssdk.transfer.s3.model.Upload;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +38,12 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 public class S3Service {
 
   private final S3Client s3Client;
+  private final S3TransferManager transferManager;
   private final PasswordEncoder passwordEncoder;
   private final BoxRepository boxRepository;
+
+  long startTime;
+  long endTime;
 
   @Value("${spring.cloud.aws.S3.bucket}")
   private String bucketName;
@@ -56,14 +67,27 @@ public class S3Service {
     return "%d-%s.%s".formatted(System.currentTimeMillis(), title, extension);
   }
 
-  public String uploadFileAndGetObjectKey(String title, MultipartFile file) {
+  public String uploadFileAndGetObjectKey(String title, MultipartFile file) throws IOException {
+
+    startTime = System.currentTimeMillis();
 
     String objectKey = createObjectKey(title, Objects.requireNonNull(file.getOriginalFilename()));
+    log.warn("key : " + objectKey);
 
-    PutObjectRequest objectRequest = buildPutObjectRequest(objectKey, file);
-    RequestBody body = RequestBody.fromInputStream(getInputStream(file), file.getSize());
-    s3Client.putObject(objectRequest, body);
+    BlockingInputStreamAsyncRequestBody body =
+        AsyncRequestBody.forBlockingInputStream(file.getSize());
 
+    Upload upload = transferManager.upload(builder -> builder
+        .requestBody(body)
+        .putObjectRequest(req -> req.bucket(bucketName).key(objectKey))
+        .build());
+
+    body.writeInputStream(new ByteArrayInputStream(file.getBytes()));
+
+    //upload.completionFuture().join();
+
+    endTime = System.currentTimeMillis();
+    log.warn("time : " + (endTime - startTime));
     return objectKey;
   }
 

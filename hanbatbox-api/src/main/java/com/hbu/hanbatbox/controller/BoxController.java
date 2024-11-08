@@ -4,6 +4,7 @@ import com.hbu.hanbatbox.controller.dto.BoxListDetails;
 import com.hbu.hanbatbox.dto.BoxSaveDto;
 import com.hbu.hanbatbox.service.BoxService;
 import jakarta.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

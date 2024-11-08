@@ -13,11 +13,13 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,12 +27,16 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class BoxService {
 
     private final BoxRepository boxRepository;
     private final PasswordEncoder passwordEncoder;
     private final S3Service s3Service;
     private final EntityManager entityManager;
+
+    long startTime;
+    long endTime;
 
     public BoxListDetails searchBoxes(String keyword, String type, Long cursor) {
         if (Objects.nonNull(cursor) && cursor == -1L) {
@@ -61,9 +67,14 @@ public class BoxService {
 
         files.forEach(file -> {
 
-            String objectKey = s3Service.uploadFileAndGetObjectKey(boxDto.getTitle(), file);
+          String objectKey = null;
+          try {
+            objectKey = s3Service.uploadFileAndGetObjectKey(boxDto.getTitle(), file);
+          } catch (IOException e) {
+            throw new RuntimeException(e);
+          }
 
-            Item item = Item.createItem(objectKey);
+          Item item = Item.createItem(objectKey);
             box.addItem(item, file.getSize());
         });
 

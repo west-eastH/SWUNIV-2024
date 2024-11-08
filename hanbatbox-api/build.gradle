@@ -25,8 +25,9 @@ repositories {
 
 dependencies {
     implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.27.1'
-    implementation platform("software.amazon.awssdk:bom:2.28.17")
+    implementation platform("software.amazon.awssdk:bom:2.29.8")
     implementation 'software.amazon.awssdk:s3'
+    implementation 'software.amazon.awssdk:s3-transfer-manager'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
