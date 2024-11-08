@@ -4,6 +4,7 @@ import { MainRouter } from '@pages/landing';
 import { FileUploadCompletePage, UploadPage } from '@pages/upload';
 import { MenuHome } from '@pages/menu';
 import { IpFilter } from '@features/access';
+import { WithinPeople } from '@pages/within-people';
 
 export const router = createBrowserRouter([
   {
@@ -33,5 +34,9 @@ export const router = createBrowserRouter([
         <MenuHome />
       </IpFilter>
     ),
+  },
+  {
+    path: urlPath.peopleWithin,
+    element: <WithinPeople />,
   },
 ]);

@@ -7,7 +7,6 @@ import com.hbu.hanbatbox.repository.BoxRepository;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,7 +52,7 @@ public class S3Service {
       throw new IllegalArgumentException("올바른 파일을 추가해 주세요.");
     }
 
-    String extension = Arrays.stream(originFileName.split("\\.")).toList().getLast();
+    String extension = originFileName.substring(originFileName.lastIndexOf('.') + 1);
     return "%d-%s.%s".formatted(System.currentTimeMillis(), title, extension);
   }
 

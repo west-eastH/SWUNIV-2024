@@ -151,3 +151,48 @@ input[type='number'] {
 .gray-bg {
     background: rgba(30, 34, 41, 0.0392);
 }
+
+.announcer-radius {
+    @apply rounded-tl-[30px] rounded-tr-[30px];
+}
+
+.announcer-body {
+    @apply absolute bottom-0 w-full left-0 min-h-[180px] h-[180px] announcer-radius col p-[16px];
+}
+
+.kmj {
+    background: #D2FF72;
+    background: linear-gradient(to right, #D2FF72 0%, #7E9944 50%, #D2FF72 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.sdh {
+    background: #4D90FE;
+    background: linear-gradient(to right, #4D90FE 0%, #1F3457 70%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.egc {
+    background: rgb(239,90,111);
+    background: -webkit-linear-gradient(90deg, rgba(239,90,111,1) 31%, rgba(255,0,36,1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.announcer-body__background {
+    background: rgba( 255, 255, 255, 0.25 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 7px );
+    -webkit-backdrop-filter: blur( 7px );
+}
+
+.task-body {
+    @apply flex flex-col bg-white rounded-bl-[30px] rounded-br-[30px] p-[16px];
+}
+
+.task-body__shadow {
+    box-shadow:  0px 12px 20px rgba(193, 193, 193, 0.2),
+    -24px -24px 31px rgba(255, 255, 255, 0.1);
+}
