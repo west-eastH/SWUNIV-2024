@@ -21,7 +21,7 @@ const useStore = create<StoreStates>((set) => ({
   setKeyword: (keyword) => set({ keyword }),
   changeSearchType: (type) => set({ type }),
   setNextCursor: (cursor) => set({ cursor }),
-  isInitialFetch: false,
+  isInitialFetch: true,
   setIsInitialFetch: (isInitialFetch) => set({ isInitialFetch }),
 }));
 
@@ -79,7 +79,7 @@ const useBoxesQuery = () => {
 
   useEffect(() => {
     if (!isInitialFetch) return;
-    if (boxes.length !== 0) {
+    if (boxes.length > 0) {
       setIsInitialFetch(false);
     }
   }, [boxes, isInitialFetch]);

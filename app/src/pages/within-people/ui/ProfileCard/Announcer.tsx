@@ -11,8 +11,12 @@ export const Announcer: React.FC<AnnounceState> = ({ src, profile }) => {
   } = profile;
 
   return (
-    <div className="min-h-[468px] announcer-radius overflow-hidden relative">
-      <img src={src} alt="people.png" className="w-full h-fit" />
+    <div className="announcer-radius overflow-hidden relative">
+      <img
+        src={src}
+        alt="people.png"
+        className="object-cover max-h-[400px] w-full md:max-h-fit"
+      />
       <div className="announcer-body announcer-body__background">
         <div className="col flex-1">
           <div className="flex items-end gap-x-2">
