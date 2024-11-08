@@ -26,7 +26,7 @@ public class SecurityConfig {
             .requestMatchers(new IpAddressMatcher("127.0.0.1")).permitAll()
             .requestMatchers(new IpAddressMatcher("125.242.221.200")).permitAll()
             .requestMatchers(new IpAddressMatcher("::1")).permitAll()
-            .requestMatchers(new IpAddressMatcher("125.242.221.200")).permitAll()
+            .requestMatchers(new IpAddressMatcher("175.119.50.176")).permitAll()
             .anyRequest().permitAll()
         )
         .formLogin(form -> form.disable());
