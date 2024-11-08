@@ -42,7 +42,7 @@ public class BoxService {
 
         List<BoxGetDto> collect = boxes.stream().map(
             box -> new BoxGetDto(box.getId(), box.getUploader(), box.getTitle(), box.getFileSize(),
-                box.isCrypted())).collect(Collectors.toList());
+                box.isCrypted(), box.getDateUploaded())).collect(Collectors.toList());
 
         return new BoxListDetails(collect, nextCursorId);
     }

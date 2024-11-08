@@ -1,5 +1,6 @@
 package com.hbu.hanbatbox.dto;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,4 +13,5 @@ public class BoxGetDto {
     private String title;
     private Long fileSize;
     private boolean crypted;
+    private LocalDateTime dateUploaded;
 }
