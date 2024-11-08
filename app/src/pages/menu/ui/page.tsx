@@ -2,6 +2,7 @@ import React from 'react';
 import { Mobile } from '@features/layout';
 import { MenuList } from '@widgets/menu-list';
 import { Announcement } from './Announcement';
+import { urlPath } from '@app/config/router';
 
 export const MenuHome: React.FC = () => {
   return (
@@ -17,7 +18,7 @@ export const MenuHome: React.FC = () => {
               },
               {
                 title: '함께한 사람들',
-                path: 'peopleWithin',
+                path: urlPath.peopleWithin,
               },
             ]}
           />

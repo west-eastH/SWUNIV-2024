@@ -51,6 +51,7 @@ public class Box {
         items.add(item);
         item.setBox(this);
         this.fileSize += fileSize;
+        this.dateUploaded = LocalDateTime.now();
     }
 
     public void removeItem(Item item) {

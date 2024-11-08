@@ -9,6 +9,7 @@ export type Color =
   | 'text'
   | 'white'
   | 'gray'
+  | 'sub'
   | 'light-gray'
   | 'black';
 
@@ -50,6 +51,7 @@ const colorMap: Record<Color, string> = {
   blue: 'text-hb-blue',
   text: 'text-text',
   gray: 'text-gray',
+  sub: 'text-slate-700',
   'light-gray': 'text-light-gray',
   'light-blue': 'text-hb-light-blue',
   white: 'text-white',
