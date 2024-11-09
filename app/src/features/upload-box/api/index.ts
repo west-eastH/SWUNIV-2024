@@ -64,4 +64,12 @@ export const download = async (id: number, password: string) => {
   return { blob, filename };
 };
 
+type Delete = {
+  id: number;
+  password: string;
+};
+
+export const deleteFile = ({ id, password }: Delete) =>
+  apiClient.delete(`/files/${id}?password=${password}`);
+
 export { default as useBoxesQuery } from './useBoxesQuery';
