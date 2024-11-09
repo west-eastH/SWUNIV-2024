@@ -42,7 +42,7 @@ export const UploadPage: React.FC = () => {
   const onUpload = (files: File[]) => {
     const totalSize = files.reduce((prev, curr) => prev + curr.size, 0);
     if (totalSize > Unit.MAXIMUM) {
-      return alert('파일 용량이 300MB 를 초과할 수 없습니다.');
+      return alert('파일 용량이 100MB 를 초과할 수 없습니다.');
     }
 
     const fillAutoTitle = (files: File[]) => {

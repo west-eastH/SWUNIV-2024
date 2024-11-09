@@ -26,10 +26,7 @@ const UploadBox: React.FC<Props> = ({ data }) => {
   const onClickDownload = () => openById(`download-${data.id}`);
 
   return (
-    <Card
-      className="py-[14px] px-[20px] flex justify-between"
-      onClick={onClickDownload}
-    >
+    <Card className="card" onClick={onClickDownload}>
       <Details uploader={uploader} title={title} />
       <Time dateUploaded={dateUploaded} />
     </Card>

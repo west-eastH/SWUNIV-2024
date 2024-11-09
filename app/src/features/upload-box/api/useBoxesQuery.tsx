@@ -87,6 +87,7 @@ const useBoxesQuery = () => {
   return {
     data: dataReturns,
     query,
+    keyword,
     getNextData,
     changeSearchType,
     onSearch,

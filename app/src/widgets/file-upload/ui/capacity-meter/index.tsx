@@ -11,7 +11,7 @@ export enum Unit {
   KB = 1024,
   MB = Unit.KB * 1024,
   GB = Unit.MB * 1024,
-  MAXIMUM = Unit.MB * 300,
+  MAXIMUM = Unit.MB * 100,
 }
 
 const getUnit = (num: number, unit: Unit) => {
@@ -71,7 +71,7 @@ export const CapacityMeter: React.FC<Props> = ({ current }) => {
             /
           </Typo>
           <Typo size={11} color="light-blue" bold>
-            300MB
+            100MB
           </Typo>
         </div>
       </div>

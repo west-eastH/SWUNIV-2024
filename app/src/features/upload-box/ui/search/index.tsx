@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Dropdown, Input } from '@shared/ui';
 import clsx from 'clsx';
 import { useBoxesQuery } from '@features/upload-box';
@@ -16,7 +16,8 @@ const dropdownOptions = [
 ];
 
 export const Search: React.FC<Props> = ({ className }) => {
-  const { changeSearchType, onSearch } = useBoxesQuery();
+  const { changeSearchType, keyword, onSearch } = useBoxesQuery();
+  const [_keyword, _setKeyword] = useState(() => keyword);
 
   const onChangeSearchType = (option: string | Option) => {
     if (typeof option === 'string') {
@@ -27,6 +28,7 @@ export const Search: React.FC<Props> = ({ className }) => {
   const onChangeContent = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     onSearch(value);
+    _setKeyword(value);
   };
 
   return (
@@ -38,9 +40,10 @@ export const Search: React.FC<Props> = ({ className }) => {
       ])}
     >
       <Input
-        placeholder="기업과 창업.pdf"
+        placeholder={'기업과 창업.pdf'}
         className="w-full"
         onChange={onChangeContent}
+        value={_keyword}
       />
       <Dropdown
         defaultValue={dropdownOptions[0]}
