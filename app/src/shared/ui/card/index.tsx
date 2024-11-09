@@ -9,6 +9,7 @@ import clsx from 'clsx';
 import { Button, Input, Typo, useModal } from '@shared/ui';
 import { download } from '@features/upload-box';
 import { useLoading } from '@widgets/modal';
+import { useDeleteMutation } from '@features/upload-box/api/useDeleteMutation';
 
 type Props = { children: ReactNode } & DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -19,7 +20,7 @@ export const Card: React.FC<Props> = ({ children, className, ...props }) => {
   return (
     <article
       className={clsx([
-        'w-full border border-1 border-[#E3E3E3] drop-shadow-sm rounded-[12px]',
+        'w-full border-[2px] border-[#E3E3E3] bg-white drop-shadow-sm rounded-[12px]',
         className,
       ])}
       {...props}
@@ -48,6 +49,7 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
   const [password, setPassword] = useState('');
   const { createModal, openById, closeById } = useModal();
   const { onLoading, finishLoading } = useLoading();
+  const { mutateAsync: deleteFile } = useDeleteMutation();
 
   const close = () => closeById(`download-${id}`);
 
@@ -72,6 +74,17 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
     }
   };
 
+  const onClickDeleteFile = async () => {
+    try {
+      await deleteFile({ id, password });
+      alert('삭제를 완료하였습니다!');
+      closeById(`download-${id}`);
+    } catch (e) {
+      console.error(e);
+      openById('password-invalid-error');
+    }
+  };
+
   useEffect(() => {
     createModal({
       id: 'password-invalid-error',
@@ -85,11 +98,21 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
 
   return (
     <div>
-      <Input
-        placeholder="****"
-        type="password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
+      <div className="flex gap-x-2">
+        <Input
+          placeholder="****"
+          type="password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <Button
+          theme="white"
+          className="px-10 w-[60px] py-1"
+          onClick={onClickDeleteFile}
+        >
+          삭제
+        </Button>
+      </div>
+
       <div className="mt-[20px] flex gap-x-2">
         <Button
           theme="primary"

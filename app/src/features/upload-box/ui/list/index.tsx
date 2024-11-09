@@ -13,7 +13,7 @@ export const UploadBoxList: React.FC = () => {
 
   return (
     <ScrollEndObserver onScrollEnd={getNextData}>
-      <div className="flex flex-col gap-y-[8px] mb-[20px]">
+      <div className="flex flex-col gap-y-3 mb-[20px]">
         {boxes.map((box) => (
           <UploadBox key={box.id} data={box} />
         ))}
