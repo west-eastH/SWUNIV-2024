@@ -16,7 +16,7 @@ const Modal: React.FC<Props> = ({ id, node, header, options }) => {
 
   return (
     <Container>
-      <div className="w-[320px] rounded-md drop-shadow-md bg-white py-[20px] px-[16px]">
+      <div className="w-[320px] rounded-md drop-shadow-md bg-white py-[20px] px-[16px] modal">
         <header className="pb-[21px]">{header}</header>
         {node({ close })}
 
