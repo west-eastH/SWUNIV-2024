@@ -34,6 +34,7 @@ public class S3Controller {
     HttpHeaders responseHeader = DownloadResponseBuilder.getResponseHeader(fileDetails.fileName(),
         fileDetails.size());
     log.warn("파일 다운로드 완료! (" + fileDetails.fileName() + ")");
+
     return new ResponseEntity<>(fileDetails.content(), responseHeader, HttpStatus.OK);
   }
 
