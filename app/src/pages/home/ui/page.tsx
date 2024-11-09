@@ -4,17 +4,22 @@ import DashboardPanel from '@widgets/dashboard-panel';
 import { Search, UploadBoxList, useBoxesQuery } from '@features/upload-box';
 import { DownloadBody, DownloadHeader, Typo, useModal } from '@shared/ui';
 import { useSearchParams } from 'react-router-dom';
+import { useNameManager } from '@features/nickname';
 
 export const Home: React.FC = () => {
   const { data, isInitialFetch } = useBoxesQuery();
   const { createModal, openById } = useModal();
   const [searchParams] = useSearchParams();
+  const { nickname, changeNickname, generateNickname } = useNameManager();
 
   if (!data) return null;
 
   useEffect(() => {
+    if (!nickname) changeNickname(generateNickname());
+
     const id = searchParams.get('downloadId');
     if (!id) return;
+
     const downloadModalId = createModal({
       id: `download-${id}`,
       header: <DownloadHeader />,
@@ -23,6 +28,7 @@ export const Home: React.FC = () => {
         noContent: true,
       },
     });
+
     openById(downloadModalId);
   }, [searchParams]);
 
