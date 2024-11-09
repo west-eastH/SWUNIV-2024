@@ -14,16 +14,14 @@ export enum Unit {
   MAXIMUM = Unit.MB * 100,
 }
 
-const getUnit = (num: number, unit: Unit) => {
+export const getUnit = (num: number, unit: Unit) => {
   const mainUnit = Math.floor(num / unit);
   const remainingUnit = (num % unit) / unit;
-  // console.log({ mainUnit, remainingUnit });
 
   return (mainUnit + remainingUnit).toFixed(2);
 };
 
 const getCapacity = (size: number) => {
-  // console.log({ size });
   if (size >= Unit.MB && size < Unit.GB) {
     return getUnit(size, Unit.MB);
   }

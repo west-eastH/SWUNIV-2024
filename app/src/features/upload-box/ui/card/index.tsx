@@ -9,7 +9,7 @@ type Props = {
 };
 
 const UploadBox: React.FC<Props> = ({ data }) => {
-  const { dateUploaded, title, uploader } = data;
+  const { dateUploaded, title, uploader, fileSize } = data;
   const { createModal, openById } = useModal();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const UploadBox: React.FC<Props> = ({ data }) => {
 
   return (
     <Card className="card" onClick={onClickDownload}>
-      <Details uploader={uploader} title={title} />
+      <Details uploader={uploader} title={title} fileSize={fileSize} />
       <Time dateUploaded={dateUploaded} />
     </Card>
   );
