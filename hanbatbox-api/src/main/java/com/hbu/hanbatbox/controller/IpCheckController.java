@@ -16,7 +16,7 @@ public class IpCheckController {
         String clientIp = request.getRemoteAddr();
         return clientIp.startsWith("223.194.160.") || clientIp.equals("127.0.0.1")
             || clientIp.equals("125.242.221.200") || clientIp.equals("175.119.50.176")
-            || clientIp.equals("222.114.188.183")
+            || clientIp.equals("222.114.188.183") || clientIp.equals("124.53.118.139")
             || clientIp.equals("::1") || clientIp.equals("0:0:0:0:0:0:0:1");
     }
 
