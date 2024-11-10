@@ -1,6 +1,6 @@
 # Hanbot BOX 
 
-![title.png](./.github/phone-title.png)
+![title.png](./.github/all-device.png)
 
 # 개요
 
