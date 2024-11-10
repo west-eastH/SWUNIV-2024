@@ -10,6 +10,7 @@ import { Button, Input, Typo, useModal } from '@shared/ui';
 import { download } from '@features/upload-box';
 import { useLoading } from '@widgets/modal';
 import { useDeleteMutation } from '@features/upload-box/api/useDeleteMutation';
+import WebDownloader from '@features/download';
 
 type Props = { children: ReactNode } & DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -67,11 +68,22 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
       openById('download-complete');
     } catch (error) {
       console.log(error);
-      openById('password-invalid-error');
+
+      const status = (error as any)?.status as number;
+      if (status === 401) {
+        openById('password-invalid-error');
+        return;
+      }
+      openById('download-failed');
     } finally {
       finishLoading();
       closeById(`download-${id}`);
     }
+  };
+
+  const onClickCopyDownloadLink = () => {
+    const downloadUrl = WebDownloader.createDownloadLink(id);
+    WebDownloader.copyOnDevice(downloadUrl, () => openById('copy-complete'));
   };
 
   const onClickDeleteFile = async () => {
@@ -94,6 +106,30 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
         </div>
       ),
     });
+
+    createModal({
+      id: 'copy-complete',
+      header: (
+        <Typo size={16} bold>
+          완료
+        </Typo>
+      ),
+      node: () => <Typo size={14}>다운로드 링크를 복사하였습니다.</Typo>,
+    });
+
+    createModal({
+      id: 'download-failed',
+      header: (
+        <Typo size={16} bold>
+          다운로드 실패
+        </Typo>
+      ),
+      node: () => (
+        <Typo size={14}>
+          현재 서버 통신이 잠시 원활하지 못했어요. 다운로드를 다시 시도해주세요.
+        </Typo>
+      ),
+    });
   }, []);
 
   return (
@@ -110,6 +146,16 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
           onClick={onClickDeleteFile}
         >
           삭제
+        </Button>
+      </div>
+
+      <div className="flex w-full justify-center py-2.5">
+        <Button
+          theme="white"
+          className="!py-1"
+          onClick={onClickCopyDownloadLink}
+        >
+          다운로드 링크 복사
         </Button>
       </div>
 

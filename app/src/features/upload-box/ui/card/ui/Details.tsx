@@ -2,6 +2,7 @@ import React from 'react';
 import { UploadBoxDetails } from '@entities/upload-box';
 import { Icon, Typo } from '@shared/ui';
 import { getUnit, Unit } from '@widgets/file-upload/ui/capacity-meter';
+import { createAdjustedDeviceTitle } from '@features/upload-box/utils';
 
 type Props = Pick<UploadBoxDetails, 'uploader' | 'title' | 'fileSize'>;
 
@@ -11,12 +12,17 @@ const Details: React.FC<Props> = ({ uploader, title, fileSize }) => {
   return (
     <div className="flex items-center gap-x-[8px]">
       <Icon.BlueFile />
-      <div className="flex flex-col">
+      <div className="flex flex-col overflow-hidden">
         <div className="flex gap-x-1.5">
           <Typo size={14} bold>
-            {title}
+            {createAdjustedDeviceTitle(title)}
           </Typo>
-          <Typo size={10} color="light-gray" className="self-end pb-[2px]" bold>
+          <Typo
+            size={10}
+            color="light-gray"
+            className="self-end pb-[2px] whitespace-pre-wrap"
+            bold
+          >
             {size}MB
           </Typo>
         </div>

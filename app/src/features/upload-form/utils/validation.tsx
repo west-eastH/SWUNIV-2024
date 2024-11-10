@@ -23,8 +23,12 @@ export const withValidation = (
   openById: (id: string) => void,
   callback: () => void,
 ) => {
-  if (validStringField(body.title)) {
-    return createErrorModal(createModal, openById, '제목을 입력해주세요.');
+  if (validStringField(body.title) && body.title.length > 30) {
+    return createErrorModal(
+      createModal,
+      openById,
+      '제목을 30자 이하로 입력해주세요.',
+    );
   }
 
   if (validStringField(body.uploader)) {
