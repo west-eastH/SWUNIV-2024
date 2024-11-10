@@ -10,6 +10,7 @@ import { Button, Input, Typo, useModal } from '@shared/ui';
 import { download } from '@features/upload-box';
 import { useLoading } from '@widgets/modal';
 import { useDeleteMutation } from '@features/upload-box/api/useDeleteMutation';
+import WebDownloader from '@features/download';
 
 type Props = { children: ReactNode } & DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -74,6 +75,11 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
     }
   };
 
+  const onClickCopyDownloadLink = () => {
+    const downloadUrl = WebDownloader.createDownloadLink(id);
+    WebDownloader.copyOnDevice(downloadUrl, () => openById('copy-complete'));
+  };
+
   const onClickDeleteFile = async () => {
     try {
       await deleteFile({ id, password });
@@ -94,6 +100,16 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
         </div>
       ),
     });
+
+    createModal({
+      id: 'copy-complete',
+      header: (
+        <Typo size={16} bold>
+          완료
+        </Typo>
+      ),
+      node: () => <Typo size={14}>다운로드 링크를 복사하였습니다.</Typo>,
+    });
   }, []);
 
   return (
@@ -110,6 +126,16 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
           onClick={onClickDeleteFile}
         >
           삭제
+        </Button>
+      </div>
+
+      <div className="flex w-full justify-center py-2.5">
+        <Button
+          theme="white"
+          className="!py-1"
+          onClick={onClickCopyDownloadLink}
+        >
+          다운로드 링크 복사
         </Button>
       </div>
 

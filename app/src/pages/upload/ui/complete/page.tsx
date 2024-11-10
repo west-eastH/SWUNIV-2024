@@ -4,6 +4,7 @@ import { Mobile } from '@features/layout';
 import { useLocation, useNavigate } from 'react-router';
 import { urlPath } from '@app/config/router';
 import { useBoxesQuery } from '@features/upload-box';
+import WebDownloader from '@features/download';
 
 export const FileUploadCompletePage: React.FC = () => {
   const { createModal, openById } = useModal();
@@ -25,26 +26,8 @@ export const FileUploadCompletePage: React.FC = () => {
       return alert('업로드 정보를 찾을 수 없습니다.');
     }
 
-    const downloadUrl = window.location.origin + `?downloadId=${id}`;
-    if (window.navigator?.clipboard) {
-      window.navigator.clipboard
-        .writeText(downloadUrl)
-        .then(() => openById('copy-complete'));
-    } else {
-      const textArea = document.createElement('textarea');
-      textArea.value = downloadUrl;
-      document.body.appendChild(textArea);
-      textArea.select();
-      textArea.setSelectionRange(0, 99999);
-      try {
-        document.execCommand('copy');
-      } catch (err) {
-        console.error('복사 실패', err);
-      }
-      textArea.setSelectionRange(0, 0);
-      document.body.removeChild(textArea);
-      openById('copy-complete');
-    }
+    const downloadUrl = WebDownloader.createDownloadLink(id);
+    WebDownloader.copyOnDevice(downloadUrl, () => openById('copy-complete'));
   };
 
   useEffect(() => {
