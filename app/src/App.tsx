@@ -17,7 +17,7 @@ const HelmetConfig: React.FC = () => (
     />
     <meta
       property="og:image"
-      content="https://github.com/west-eastH/SWUNIV-2024/blob/main/og-image.png"
+      content="https://www.han-box.co.kr/og-image.png"
     />
   </Helmet>
 );
