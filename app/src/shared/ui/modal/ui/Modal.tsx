@@ -3,7 +3,7 @@ import Container from './Container';
 import { Modal as Props } from '../types';
 import useModal from '../hooks/useModal';
 import { Button } from '@shared/ui';
-import { ModalButtonSection } from './ModalButtonSection';
+import { ModalButtonSection } from '@shared/ui';
 
 const Modal: React.FC<Props> = ({ id, node, header, options }) => {
   const { closeById } = useModal();

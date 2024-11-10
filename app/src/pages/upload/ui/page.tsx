@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Mobile } from '@features/layout';
 import { Button, Icon, Typo, useModal } from '@shared/ui';
 import {
@@ -70,11 +70,28 @@ export const UploadPage: React.FC = () => {
         navigate(urlPath.uploadComplete, { state: { id } });
       } catch (error) {
         console.error(error);
+        openById('upload-failed');
       } finally {
         finishLoading();
       }
     });
   });
+
+  useEffect(() => {
+    createModal({
+      id: 'upload-failed',
+      header: (
+        <Typo size={16} bold>
+          업로드 실패
+        </Typo>
+      ),
+      node: () => (
+        <Typo size={14}>
+          현재 서버 통신이 잠시 원활하지 못했어요. 업로드를 다시 시도해주세요.
+        </Typo>
+      ),
+    });
+  }, []);
 
   return (
     <Mobile
