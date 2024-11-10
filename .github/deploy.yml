@@ -18,3 +18,4 @@ jobs:
       - name: Trigger Makefile on Server
         run: |
           ssh -o StrictHostKeyChecking=no hbu@${{ secrets.SERVER_HOST }} 'cd /home/hbu/final/hanbatbox-api && git pull && make re'
+
