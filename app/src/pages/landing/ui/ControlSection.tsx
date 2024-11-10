@@ -2,10 +2,12 @@ import React from 'react';
 import { Button, Typo } from '@shared/ui';
 import { useNameManager } from '@features/nickname';
 import { useAccessible } from '@features/access';
+import { useLoading } from '@widgets/modal';
 
 export const ControlSection: React.FC = () => {
   const { generateNickname, changeNickname } = useNameManager();
   const access = useAccessible();
+  const { onLoading, finishLoading } = useLoading();
 
   const start = () => {
     const newNickname = generateNickname();
@@ -13,9 +15,18 @@ export const ControlSection: React.FC = () => {
   };
 
   const onClickStartButton = async () => {
-    const accessible = await access();
-    if (!accessible) return;
-    start();
+    try {
+      onLoading();
+      const accessible = await access();
+      if (!accessible) return;
+      start();
+    } catch (error) {
+      console.error(error);
+      alert('서버 오류가 발생하였습니다. 관리자에게 문의해주세요.');
+      alert(import.meta.env.VITE_API_ENDPOINT);
+    } finally {
+      finishLoading();
+    }
   };
 
   return (
