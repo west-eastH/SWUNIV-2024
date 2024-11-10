@@ -43,7 +43,7 @@
 # 팀원 소개
 |김만종|서동현|최은기|
 |---|---|---|
-|![김만종](.github/mjk.png)|![김만종](.github/sdh.png)|![김만종](.github/egc.png)|
+|![김만종](.github/_kmj.jpg)|![서동현](.github/_sdh.jpg)|![최은기](.github/_ceg.jpg)|
 |Java Spring 백엔드 개발|Java Spring 백엔드 개발|기획, UI/UX 디자인, FE 개발|
 |AWS S3 인프라 구축 및 운영 관리|시스템 내 교내, 교외 네트워크 필터 방화벽 작업|애플리케이션 전체 설계 및 기획, 기획서 작성|
 |서버 애플리케이션, S3 간 파일 통신 모듈 설계|파일 업로드 & 다운로드 & 조회 API 구현|전체 UI/UX 디자인|
