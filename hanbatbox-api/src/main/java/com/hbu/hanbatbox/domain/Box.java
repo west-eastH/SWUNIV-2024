@@ -54,8 +54,4 @@ public class Box {
         this.dateUploaded = LocalDateTime.now();
     }
 
-    public void removeItem(Item item) {
-        items.remove(item);
-        item.setBox(null);
-    }
 }

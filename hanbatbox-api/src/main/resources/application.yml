@@ -11,8 +11,6 @@ spring:
   jpa:
     show-sql: true
     database: postgresql
-    hibernate:
-      ddl-auto: update
   cloud:
     aws:
       S3:
