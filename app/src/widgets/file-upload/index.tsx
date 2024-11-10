@@ -2,14 +2,17 @@ import React from 'react';
 import { UploadBox } from './ui/box';
 import { CapacityMeter } from './ui/capacity-meter';
 import { Typo } from '@shared/ui';
+import { HbBox } from '@entities/hb-box';
 
 type Props = {
-  files: File[];
+  files: HbBox[];
   onUpload: (files: File[]) => void;
 };
 
 export const FileUpload: React.FC<Props> = ({ onUpload, files }) => {
-  const currentCapacity = files.reduce((prev, cur) => prev + cur.size, 0);
+  const currentCapacity = files
+    .map((f) => f.origin)
+    .reduce((prev, cur) => prev + cur.size, 0);
 
   return (
     <article className="col gap-y-3">
