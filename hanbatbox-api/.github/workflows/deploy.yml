@@ -1,0 +1,20 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Trigger Makefile on Server
+        run: |
+          ssh -o StrictHostKeyChecking=no hbu@${{ secrets.SERVER_HOST }} 'cd /home/hbu/final/hanbatbox-api && git pull && make re'
