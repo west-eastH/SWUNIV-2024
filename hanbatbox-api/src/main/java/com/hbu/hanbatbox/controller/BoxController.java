@@ -4,7 +4,6 @@ import com.hbu.hanbatbox.controller.dto.BoxListDetails;
 import com.hbu.hanbatbox.dto.BoxSaveDto;
 import com.hbu.hanbatbox.service.BoxService;
 import jakarta.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -25,9 +24,8 @@ public class BoxController {
   private final BoxService boxService;
 
   @GetMapping
-  public ResponseEntity<BoxListDetails> getAllBoxes(
-      @RequestParam(required = false) Long cursor, @RequestParam(required = false) String keyword,
-      @RequestParam(required = false) String type) {
+  public ResponseEntity<BoxListDetails> getAllBoxes(@RequestParam(required = false) Long cursor,
+      @RequestParam(required = false) String keyword, @RequestParam(required = false) String type) {
 
     BoxListDetails boxListDetails = boxService.searchBoxes(keyword, type, cursor);
     return ResponseEntity.ok(boxListDetails);

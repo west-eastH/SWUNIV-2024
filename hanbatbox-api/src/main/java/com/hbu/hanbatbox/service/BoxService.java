@@ -30,88 +30,83 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class BoxService {
 
-    private final BoxRepository boxRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final S3Service s3Service;
-    private final EntityManager entityManager;
+  private final BoxRepository boxRepository;
+  private final PasswordEncoder passwordEncoder;
+  private final S3Service s3Service;
+  private final EntityManager entityManager;
 
-    long startTime;
-    long endTime;
-
-    public BoxListDetails searchBoxes(String keyword, String type, Long cursor) {
-        if (Objects.nonNull(cursor) && cursor == -1L) {
-            return new BoxListDetails(new ArrayList<>(), -1L);
-        }
-
-        List<Box> boxes = search(cursor, type, keyword);
-        Long nextCursorId = getNextCursorId(boxes);
-
-        List<BoxGetDto> collect = boxes.stream().map(
-            box -> new BoxGetDto(box.getId(), box.getUploader(), box.getTitle(), box.getFileSize(),
-                box.isCrypted(), box.getDateUploaded())).collect(Collectors.toList());
-
-        return new BoxListDetails(collect, nextCursorId);
+  public BoxListDetails searchBoxes(String keyword, String type, Long cursor) {
+    if (Objects.nonNull(cursor) && cursor == -1L) {
+      return new BoxListDetails(new ArrayList<>(), -1L);
     }
 
-    public Long saveBoxWithItems(BoxSaveDto boxDto, List<MultipartFile> files) {
-        String encodedPassword = null;
-        boolean isCrypted = false;
+    List<Box> boxes = search(cursor, type, keyword);
+    Long nextCursorId = getNextCursorId(boxes);
 
-        if (boxDto.getPassword() != null && !boxDto.getPassword().isEmpty()) {
-            encodedPassword = passwordEncoder.encode(boxDto.getPassword());
-            isCrypted = true;
-        }
+    List<BoxGetDto> collect = boxes.stream().map(
+        box -> new BoxGetDto(box.getId(), box.getUploader(), box.getTitle(), box.getFileSize(),
+            box.isCrypted(), box.getDateUploaded())).collect(Collectors.toList());
 
-        Box box = Box.createBox(boxDto.getUploader(), boxDto.getTitle(), encodedPassword,
-            isCrypted);
+    return new BoxListDetails(collect, nextCursorId);
+  }
 
-        files.forEach(file -> {
+  public Long saveBoxWithItems(BoxSaveDto boxDto, List<MultipartFile> files) {
+    String encodedPassword = null;
+    boolean isCrypted = false;
 
-          String objectKey = null;
-          try {
-            objectKey = s3Service.uploadFileAndGetObjectKey(boxDto.getTitle(), file);
-          } catch (IOException e) {
-            throw new RuntimeException(e);
-          }
-
-          Item item = Item.createItem(objectKey);
-            box.addItem(item, file.getSize());
-        });
-
-        boxRepository.save(box);
-
-        return box.getId();
+    if (boxDto.getPassword() != null && !boxDto.getPassword().isEmpty()) {
+      encodedPassword = passwordEncoder.encode(boxDto.getPassword());
+      isCrypted = true;
     }
 
-    private Long getNextCursorId(List<Box> boxes) {
-        if (boxes.isEmpty()) return null;
-        Long nextCursor = boxes.getLast().getId();
-        return nextCursor == null ? -1 : nextCursor;
+    Box box = Box.createBox(boxDto.getUploader(), boxDto.getTitle(), encodedPassword, isCrypted);
+
+    files.forEach(file -> {
+
+      String objectKey;
+      try {
+        objectKey = s3Service.uploadFileAndGetObjectKey(boxDto.getTitle(), file);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+
+      Item item = Item.createItem(objectKey);
+      box.addItem(item, file.getSize());
+    });
+
+    boxRepository.save(box);
+
+    return box.getId();
+  }
+
+  private Long getNextCursorId(List<Box> boxes) {
+    if (boxes.isEmpty()) {
+      return null;
+    }
+    Long nextCursor = boxes.getLast().getId();
+    return nextCursor == null ? -1 : nextCursor;
+  }
+
+  private List<Box> search(Long cursor, String type, String keyword) {
+    CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Box> query = builder.createQuery(Box.class);
+    Root<Box> root = query.from(Box.class);
+
+    List<Predicate> predicates = new ArrayList<>();
+
+    if (cursor != null) {
+      predicates.add(builder.lessThan(root.get("id"), cursor));
+    }
+    if ("nickname".equals(type) && keyword != null) {
+      predicates.add(builder.like(root.get("uploader"), keyword + "%"));
+    }
+    if ("title".equals(type) && keyword != null) {
+      predicates.add(builder.like(root.get("title"), keyword + "%"));
     }
 
-    private List<Box> search(Long cursor, String type, String keyword) {
-        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Box> query = builder.createQuery(Box.class);
-        Root<Box> root = query.from(Box.class);
+    query.select(root).where(builder.and(predicates.toArray(new Predicate[0])))
+        .orderBy(builder.desc(root.get("id")));
 
-        List<Predicate> predicates = new ArrayList<>();
-
-        if (cursor != null) {
-            predicates.add(builder.lessThan(root.get("id"), cursor));
-        }
-        if ("nickname".equals(type) && keyword != null) {
-            predicates.add(builder.like(root.get("uploader"), keyword + "%"));
-        }
-        if ("title".equals(type) && keyword != null) {
-            predicates.add(builder.like(root.get("title"), keyword + "%"));
-        }
-
-        query.select(root)
-            .where(builder.and(predicates.toArray(new Predicate[0])))
-            .orderBy(builder.desc(root.get("id")));
-
-        return entityManager.createQuery(query)
-            .setMaxResults(10)
-            .getResultList();
-    }
+    return entityManager.createQuery(query).setMaxResults(10).getResultList();
+  }
 }
