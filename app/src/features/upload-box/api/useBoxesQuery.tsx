@@ -4,6 +4,7 @@ import { getBoxList } from './index';
 import { UploadBoxDetails } from '@entities/upload-box';
 import { boxQueryKeys } from '@shared/query';
 import { useEffect } from 'react';
+import { useLoading } from '@widgets/modal';
 
 type StoreStates = {
   keyword?: string;
@@ -46,7 +47,7 @@ const useBoxesQuery = () => {
     isInitialFetch,
     setIsInitialFetch,
   } = useStore();
-  const { data, fetchNextPage, ...query } = useInfiniteQuery({
+  const { data, fetchNextPage, fetchStatus, ...query } = useInfiniteQuery({
     queryKey: [boxQueryKeys.list, keyword, type],
     queryFn: ({ pageParam }) =>
       getBoxList({
@@ -57,6 +58,7 @@ const useBoxesQuery = () => {
     initialPageParam: undefined as number | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursorId,
   });
+  const { onLoading, finishLoading } = useLoading();
 
   const boxes = (() => {
     if (!data) return [] as UploadBoxDetails[];
@@ -83,6 +85,14 @@ const useBoxesQuery = () => {
       setIsInitialFetch(false);
     }
   }, [boxes, isInitialFetch]);
+
+  useEffect(() => {
+    if (fetchStatus === 'fetching') {
+      onLoading();
+    } else {
+      finishLoading();
+    }
+  }, [fetchStatus]);
 
   return {
     data: dataReturns,
