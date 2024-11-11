@@ -1,8 +1,10 @@
 package com.hbu.hanbatbox.config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,18 +32,19 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .authorizeHttpRequests(authz -> {
-                for (String ip : ALLOWED_IPS) {
-                    authz.requestMatchers(new IpAddressMatcher(ip)).permitAll();
-                }
-
-                authz.requestMatchers("/api/boxes/uploads", "/api/files/downloads/**").authenticated();
-                authz.anyRequest().permitAll();
-            })
+            .authorizeHttpRequests(authz -> authz
+                .requestMatchers("/api/boxes/uploads", "/api/files/downloads/**").access((authentication, context) -> {
+                    HttpServletRequest request = context.getRequest();
+                    boolean isAllowedIp = ALLOWED_IPS.stream().anyMatch(ip -> new IpAddressMatcher(ip).matches(request));
+                    return new AuthorizationDecision(isAllowedIp);
+                })
+                .anyRequest().permitAll()
+            )
             .formLogin(form -> form.disable());
 
         return http.build();
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
