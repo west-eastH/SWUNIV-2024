@@ -11,6 +11,7 @@ import { download } from '@features/upload-box';
 import { useLoading } from '@widgets/modal';
 import { useDeleteMutation } from '@features/upload-box/api/useDeleteMutation';
 import WebDownloader from '@features/download';
+import ga from 'react-ga4';
 
 type Props = { children: ReactNode } & DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -76,6 +77,11 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
 
   const onClickDownload = async () => {
     try {
+      ga.event({
+        category: '상호작용',
+        action: '다운로드 시도',
+        label: `[id: ${id}]`,
+      });
       onLoading();
       const { blob, filename } = await download(id, password);
       const anchor = document.createElement('a');
@@ -86,6 +92,11 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
       );
       URL.revokeObjectURL(anchor.href);
       openById('download-complete');
+      ga.event({
+        category: '상호작용',
+        action: '다운로드 성공',
+        label: `[id: ${id}]`,
+      });
     } catch (error) {
       console.log(error);
 
@@ -95,6 +106,11 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
         return;
       }
       openById('download-failed');
+      ga.event({
+        category: '상호작용',
+        action: '다운로드 실패',
+        label: `[id: ${id}], ${error}`,
+      });
     } finally {
       finishLoading();
       closeById(`download-${id}`);

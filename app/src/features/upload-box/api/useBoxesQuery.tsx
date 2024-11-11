@@ -5,6 +5,7 @@ import { UploadBoxDetails } from '@entities/upload-box';
 import { boxQueryKeys } from '@shared/query';
 import { useEffect } from 'react';
 import { useLoading } from '@widgets/modal';
+import ga from 'react-ga4';
 
 type StoreStates = {
   keyword?: string;
@@ -84,6 +85,12 @@ const useBoxesQuery = () => {
     if (boxes.length > 0) {
       setIsInitialFetch(false);
     }
+
+    ga.event({
+      category: '상호작용',
+      action: '데이터 추가로 불러오기',
+      label: `현재까지 불러온 데이터 갯수: ${boxes.length}`,
+    });
   }, [boxes, isInitialFetch]);
 
   useEffect(() => {

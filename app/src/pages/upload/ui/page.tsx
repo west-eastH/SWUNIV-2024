@@ -90,8 +90,9 @@ export const UploadPage: React.FC = () => {
         finishLoading();
         const size = assemble.files.reduce((prev, curr) => prev + curr.size, 0);
         ga.event({
-          category: 'button',
-          action: `파일 업로드 수행 (파일이름: ${assemble.title}, 업로더: ${assemble.uploader}), 사이즈: ${size}`,
+          category: '리다이렉션',
+          action: '파일 업로드 요청',
+          label: `파일이름: ${assemble.title}, 업로더: ${assemble.uploader}), 사이즈: ${size}`,
         });
       }
     });

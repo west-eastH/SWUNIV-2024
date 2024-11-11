@@ -17,8 +17,9 @@ export const ControlSection: React.FC = () => {
   const onClickStartButton = () => {
     start();
     ga.event({
-      category: 'button',
-      action: '서비스 이용 시작',
+      category: '리다이렉션',
+      action: '서비스 이용 클릭',
+      label: accessible ? '교내 지역에서 접근' : '교외 지역에서 접근',
     });
   };
 

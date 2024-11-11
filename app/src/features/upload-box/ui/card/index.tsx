@@ -3,6 +3,7 @@ import { UploadBoxDetails } from '@entities/upload-box';
 import { Card, DownloadBody, DownloadHeader, useModal } from '@shared/ui';
 import Details from './ui/Details';
 import Time from './ui/Time';
+import ga from 'react-ga4';
 
 type Props = {
   data: UploadBoxDetails;
@@ -23,7 +24,14 @@ const UploadBox: React.FC<Props> = ({ data }) => {
     });
   }, []);
 
-  const onClickDownload = () => openById(`download-${data.id}`);
+  const onClickDownload = () => {
+    openById(`download-${data.id}`);
+    ga.event({
+      category: '상호작용',
+      action: '박스 카드 터치',
+      label: `[id: ${data.id}] ${data.title}`,
+    });
+  };
 
   return (
     <Card className="card" onClick={onClickDownload}>
