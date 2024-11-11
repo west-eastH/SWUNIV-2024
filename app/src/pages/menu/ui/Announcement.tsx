@@ -10,7 +10,7 @@ export const Announcement: React.FC = () => {
       </Typo>
 
       <Typo size={12} color="gray" className="pt-3">
-        한밭대학교 지역 내에서만 서비스 이용이 가능한 점 참고바랍니다.
+        한밭대학교 지역 내에서만 서비스 전체 기능 이용이 가능한 점 참고바랍니다.
       </Typo>
 
       <Typo size={12} color="gray" className="pt-3">
