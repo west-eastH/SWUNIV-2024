@@ -33,7 +33,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/boxes/uploads", "/files/downloads/**").access((authentication, context) -> {
+                .requestMatchers("/boxes/uploads").access((authentication, context) -> {
                     HttpServletRequest request = context.getRequest();
                     boolean isAllowedIp = ALLOWED_IPS.stream().anyMatch(ip -> new IpAddressMatcher(ip).matches(request));
                     return new AuthorizationDecision(isAllowedIp);
