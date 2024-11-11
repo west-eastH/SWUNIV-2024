@@ -3,6 +3,7 @@ import { Button, Typo } from '@shared/ui';
 import { useNameManager } from '@features/nickname';
 import { useAccessible } from '@features/access';
 import { useLoading } from '@widgets/modal';
+import ga from 'react-ga4';
 
 export const ControlSection: React.FC = () => {
   const { generateNickname, changeNickname } = useNameManager();
@@ -26,6 +27,10 @@ export const ControlSection: React.FC = () => {
       alert(import.meta.env.VITE_API_ENDPOINT);
     } finally {
       finishLoading();
+      ga.event({
+        category: 'button',
+        action: '서비스 이용 시작',
+      });
     }
   };
 

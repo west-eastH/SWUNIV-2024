@@ -5,11 +5,17 @@ import { FileUploadCompletePage, UploadPage } from '@pages/upload';
 import { MenuHome } from '@pages/menu';
 import { IpFilter } from '@features/access';
 import { WithinPeople } from '@pages/within-people';
+import { HistoryTracker } from '@features/analytics';
 
 export const router = createBrowserRouter([
   {
     path: urlPath.root,
-    element: <MainRouter />,
+    element: (
+      <>
+        <MainRouter />
+        <HistoryTracker />
+      </>
+    ),
   },
   {
     path: urlPath.upload,

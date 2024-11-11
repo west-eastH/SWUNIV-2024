@@ -6,6 +6,11 @@ import '@app/config/style/global.css';
 import { RouterProvider } from '@app/config/router';
 import { ModalProvider } from '@shared/ui';
 import { queryClient } from '@shared/config';
+import ReactGA from 'react-ga4';
+
+const trackingId = import.meta.env.VITE_GA_KEY;
+
+ReactGA.initialize(trackingId);
 
 const HelmetConfig: React.FC = () => (
   <Helmet>
@@ -17,7 +22,7 @@ const HelmetConfig: React.FC = () => (
     />
     <meta
       property="og:image"
-      content="https://github.com/west-eastH/SWUNIV-2024/blob/main/og-image.png"
+      content="https://www.han-box.co.kr/images/og-image.png"
     />
   </Helmet>
 );
