@@ -4,7 +4,7 @@ import { peopleConfig } from '@pages/within-people/config';
 import { Button } from '@shared/ui';
 import { useNavigate } from 'react-router';
 import { urlPath } from '@app/config/router';
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import ga from 'react-ga4';
 import { useNameManager } from '@features/nickname';
 import { HelmetConfig } from '@features/analytics/TitleTracker';
