@@ -1,5 +1,6 @@
 import { getAccessible } from '@features/access/api';
 import { useModal } from '@shared/ui';
+import { useQuery } from '@tanstack/react-query';
 
 export const useAccessible = () => {
   const { openById } = useModal();
@@ -16,5 +17,11 @@ export const useAccessible = () => {
 
   return access;
 };
+
+export const useAccessQuery = () =>
+  useQuery({
+    queryKey: ['access'],
+    queryFn: getAccessible,
+  });
 
 export { IpFilter } from './config/IpFilter';

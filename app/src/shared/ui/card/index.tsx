@@ -11,6 +11,7 @@ import { download } from '@features/upload-box';
 import { useLoading } from '@widgets/modal';
 import { useDeleteMutation } from '@features/upload-box/api/useDeleteMutation';
 import WebDownloader from '@features/download';
+import { useAccessQuery } from '@features/access';
 
 type Props = { children: ReactNode } & DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -31,16 +32,34 @@ export const Card: React.FC<Props> = ({ children, className, ...props }) => {
   );
 };
 
-export const DownloadHeader = () => (
-  <div className="flex justify-center">
-    <Typo size={20} color="red" bold>
-      비밀번호
-    </Typo>
-    <Typo size={20} color="black" bold>
-      를 입력하세요
-    </Typo>
-  </div>
-);
+export const DownloadHeader = () => {
+  const { data } = useAccessQuery();
+  const accessible = !!data?.accessible;
+
+  if (!accessible) {
+    return (
+      <div className="flex justify-center">
+        <Typo size={20} color="red" bold>
+          교외&nbsp;
+        </Typo>
+        <Typo size={20} color="black" bold>
+          접근 안내
+        </Typo>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex justify-center">
+      <Typo size={20} color="red" bold>
+        비밀번호
+      </Typo>
+      <Typo size={20} color="black" bold>
+        를 입력하세요
+      </Typo>
+    </div>
+  );
+};
 
 type DownloadBodyProps = {
   id: number;
@@ -51,6 +70,8 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
   const { createModal, openById, closeById } = useModal();
   const { onLoading, finishLoading } = useLoading();
   const { mutateAsync: deleteFile } = useDeleteMutation();
+  const accessQuery = useAccessQuery();
+  const accessable = !!accessQuery.data?.accessible;
 
   const close = () => closeById(`download-${id}`);
 
@@ -134,20 +155,33 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
 
   return (
     <div>
-      <div className="flex gap-x-2">
-        <Input
-          placeholder="****"
-          type="password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <Button
-          theme="white"
-          className="px-10 w-[60px] py-1"
-          onClick={onClickDeleteFile}
-        >
-          삭제
-        </Button>
-      </div>
+      {!accessable && (
+        <div className="flex flex-col text-center justify-center">
+          <Typo size={14} color="gray">
+            교외 지역이므로 다운로드는 수행할 수 없습니다.
+          </Typo>
+          <Typo size={12} color="gray">
+            관리자에게 요청하시거나 교외에서 다시 시도해주세요.
+          </Typo>
+        </div>
+      )}
+
+      {accessable && (
+        <div className="flex gap-x-2">
+          <Input
+            placeholder="****"
+            type="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <Button
+            theme="white"
+            className="px-10 w-[60px] py-1"
+            onClick={onClickDeleteFile}
+          >
+            삭제
+          </Button>
+        </div>
+      )}
 
       <div className="flex w-full justify-center py-2.5">
         <Button
@@ -160,14 +194,20 @@ export const DownloadBody: React.FC<DownloadBodyProps> = ({ id }) => {
       </div>
 
       <div className="mt-[20px] flex gap-x-2">
+        {accessable && (
+          <Button
+            theme="primary"
+            className="flex-[0.6] !px-[10px]"
+            onClick={onClickDownload}
+          >
+            비밀번호 확인 후 다운로드
+          </Button>
+        )}
         <Button
-          theme="primary"
-          className="flex-[0.6] !px-[10px]"
-          onClick={onClickDownload}
+          theme="white"
+          className={accessable ? 'flex-[0.4]' : 'flex-1'}
+          onClick={close}
         >
-          비밀번호 확인 후 다운로드
-        </Button>
-        <Button theme="white" className="flex-[0.4]" onClick={close}>
           닫기
         </Button>
       </div>

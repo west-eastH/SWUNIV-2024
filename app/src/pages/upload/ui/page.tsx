@@ -22,6 +22,7 @@ import { useLoading } from '@widgets/modal';
 import { Unit } from '@widgets/file-upload/ui/capacity-meter';
 import { generateBoxId, HbBox } from '@entities/hb-box';
 import ga from 'react-ga4';
+import { useAccessQuery } from '@features/access';
 
 const getFirstFileName = (files: File[]) => {
   if (files.length === 0) return;
@@ -36,6 +37,8 @@ export const UploadPage: React.FC = () => {
   const { nickname } = useNameManager();
   const { onLoading, finishLoading } = useLoading();
   const { mutateAsync } = useBoxUploadMutation();
+  const { data } = useAccessQuery();
+  const accessible = !!data?.accessible;
 
   const setFileFormStates = (files: HbBox[]) => {
     const data = files.map((f) => f.origin);
@@ -108,7 +111,48 @@ export const UploadPage: React.FC = () => {
         </Typo>
       ),
     });
+
+    createModal({
+      id: 'redirect-home',
+      header: (
+        <div className="flex justify-center">
+          <Typo size={20} color="red" bold>
+            교외&nbsp;
+          </Typo>
+          <Typo size={20} color="black" bold>
+            접근 안내
+          </Typo>
+        </div>
+      ),
+      node: ({ close }) => (
+        <div className="col text-center">
+          <Typo size={14}>교외 사용자는 업로드를 이용할 수 없습니다.</Typo>
+          <Typo size={14}>
+            관리자에게 문의하시거나 교내에서 다시 시도해주세요.
+          </Typo>
+
+          <Button
+            className="mt-6"
+            onClick={() => {
+              navigate(urlPath.root);
+              close();
+            }}
+          >
+            네 확인했어요.
+          </Button>
+        </div>
+      ),
+      options: {
+        onClose: () => navigate(urlPath.root),
+        noContent: true,
+      },
+    });
   }, []);
+
+  useEffect(() => {
+    if (accessible) return;
+    openById('redirect-home');
+  }, [accessible]);
 
   return (
     <Mobile
