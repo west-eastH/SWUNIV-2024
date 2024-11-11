@@ -6,6 +6,12 @@ import '@app/config/style/global.css';
 import { RouterProvider } from '@app/config/router';
 import { ModalProvider } from '@shared/ui';
 import { queryClient } from '@shared/config';
+import { HistoryTracker } from '@features/analytics';
+import ReactGA from 'react-ga4';
+
+const trackingId = import.meta.env.VITE_GA_KEY;
+
+ReactGA.initialize(trackingId);
 
 const HelmetConfig: React.FC = () => (
   <Helmet>
@@ -26,6 +32,7 @@ const App = () => {
   return (
     <HelmetProvider>
       <HelmetConfig />
+      <HistoryTracker />
       <QueryClientProvider client={queryClient}>
         <ModalProvider>
           <RouterProvider />

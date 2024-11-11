@@ -21,6 +21,7 @@ import { BoxCreation } from '@entities/upload-box';
 import { useLoading } from '@widgets/modal';
 import { Unit } from '@widgets/file-upload/ui/capacity-meter';
 import { generateBoxId, HbBox } from '@entities/hb-box';
+import ga from 'react-ga4';
 
 const getFirstFileName = (files: File[]) => {
   if (files.length === 0) return;
@@ -84,6 +85,11 @@ export const UploadPage: React.FC = () => {
         openById('upload-failed');
       } finally {
         finishLoading();
+        const size = assemble.files.reduce((prev, curr) => prev + curr.size, 0);
+        ga.event({
+          category: 'button',
+          action: `파일 업로드 수행 (파일이름: ${assemble.title}, 업로더: ${assemble.uploader}), 사이즈: ${size}`,
+        });
       }
     });
   });
