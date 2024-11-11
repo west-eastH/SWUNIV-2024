@@ -11,7 +11,6 @@ import { download } from '@features/upload-box';
 import { useLoading } from '@widgets/modal';
 import { useDeleteMutation } from '@features/upload-box/api/useDeleteMutation';
 import WebDownloader from '@features/download';
-import { useAccessQuery } from '@features/access';
 
 type Props = { children: ReactNode } & DetailedHTMLProps<
   HTMLAttributes<HTMLDivElement>,
@@ -33,7 +32,7 @@ export const Card: React.FC<Props> = ({ children, className, ...props }) => {
 };
 
 export const DownloadHeader = () => {
-  const { data } = useAccessQuery();
+  // const { data } = useAccessQuery();
   // const accessible = !!data?.accessible;
 
   // if (!accessible) {
