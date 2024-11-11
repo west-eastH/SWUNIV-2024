@@ -5,6 +5,7 @@ import { Search, UploadBoxList, useBoxesQuery } from '@features/upload-box';
 import { DownloadBody, DownloadHeader, Typo, useModal } from '@shared/ui';
 import { useSearchParams } from 'react-router-dom';
 import { useNameManager } from '@features/nickname';
+import { HelmetConfig } from '@features/analytics/TitleTracker';
 
 export const Home: React.FC = () => {
   const { data, isInitialFetch } = useBoxesQuery();
@@ -34,6 +35,7 @@ export const Home: React.FC = () => {
 
   return (
     <Mobile header="header-logo">
+      <HelmetConfig title="홈" />
       <DashboardPanel />
       <Search />
       {isInitialFetch && (

@@ -23,6 +23,7 @@ import { Unit } from '@widgets/file-upload/ui/capacity-meter';
 import { generateBoxId, HbBox } from '@entities/hb-box';
 import ga from 'react-ga4';
 import { useAccessQuery } from '@features/access';
+import { HelmetConfig } from '@features/analytics/TitleTracker';
 
 const getFirstFileName = (files: File[]) => {
   if (files.length === 0) return;
@@ -163,6 +164,7 @@ export const UploadPage: React.FC = () => {
         </Typo>
       }
     >
+      <HelmetConfig title="업로드" />
       <FormProvider {...methods}>
         <div className="flex justify-between items-center">
           <div className="flex flex-col">

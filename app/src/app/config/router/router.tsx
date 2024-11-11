@@ -15,23 +15,41 @@ export const router = createBrowserRouter([
         <HistoryTracker />
       </>
     ),
-    children: [
-      {
-        path: urlPath.upload,
-        element: <UploadPage />,
-      },
-      {
-        path: urlPath.uploadComplete,
-        element: <FileUploadCompletePage />,
-      },
-      {
-        path: urlPath.menu,
-        element: <MenuHome />,
-      },
-      {
-        path: urlPath.peopleWithin,
-        element: <WithinPeople />,
-      },
-    ],
+  },
+  {
+    path: urlPath.upload,
+    element: (
+      <>
+        <UploadPage />
+        <HistoryTracker />
+      </>
+    ),
+  },
+  {
+    path: urlPath.uploadComplete,
+    element: (
+      <>
+        <FileUploadCompletePage />
+        <HistoryTracker />
+      </>
+    ),
+  },
+  {
+    path: urlPath.menu,
+    element: (
+      <>
+        <MenuHome />
+        <HistoryTracker />
+      </>
+    ),
+  },
+  {
+    path: urlPath.peopleWithin,
+    element: (
+      <>
+        <WithinPeople />
+        <HistoryTracker />
+      </>
+    ),
   },
 ]);

@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { urlPath } from '@app/config/router';
 import { useBoxesQuery } from '@features/upload-box';
 import WebDownloader from '@features/download';
+import { HelmetConfig } from '@features/analytics/TitleTracker';
 
 export const FileUploadCompletePage: React.FC = () => {
   const { createModal, openById } = useModal();
@@ -50,6 +51,7 @@ export const FileUploadCompletePage: React.FC = () => {
         </Typo>
       }
     >
+      <HelmetConfig title="업로드 성공" />
       <div className="col all-center flex-1">
         <Icon.HbuDownload />
         <div className="pt-[33px]">
