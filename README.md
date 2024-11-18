@@ -26,7 +26,7 @@
 |---|
 |[UI/UX 디자인 시안](https://www.figma.com/design/6nbsuCKu6zPYzZoEVEVE5j/Hanbat-Box?node-id=0-1&t=l3Q20hkdXyx0Hoe4-1)|
 |[기획서](https://drive.google.com/file/d/1lX45Gdu32BcGZojJQDlCTYprDDU476qA/view?usp=sharing)|
-|[프레젠테이션](https://drive.google.com/file/d/1lX45Gdu32BcGZojJQDlCTYprDDU476qA/view?usp=sharing)|
+|[프레젠테이션](https://docs.google.com/presentation/d/1B_qge1Fnn2OQBGUDZ3tnd7BQXVSLr263/edit?usp=sharing&ouid=104294684290661751496&rtpof=true&sd=true)|
 
 
 # 주요 기능
